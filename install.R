@@ -1,9 +1,9 @@
 install.packages(c("tidyverse",
                    "knitr", "rmarkdown",
-                   "spocc", "mapr", "sf",
+                   "spocc", "mapr", ,"rgdal", "sf",
                    "scrubr", "osmdata", "raster",
                    "osmdata", "mapr" , "maptools",
-                   "geojsonsf","rgdal", "taxize",
+                   "geojsonsf", "taxize",
                    "data.table", "mapview", "INLA" ))
 
 
