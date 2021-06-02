@@ -1,27 +1,35 @@
 ---
 title: "R Notebook"
-output: html_notebook
+output: 
+  html_notebook:
+  html_document:
+    code_folding: show
 ---
 
 
-```{r, warning=FALSE, message=FALSE}
+```{r, class.source = 'fold-hide', warning=FALSE, message=FALSE}
 library("rgdal") 
 library("sf")
 library('tidyverse')
 library('spocc')
 library('mapr')
 library("scrubr")
-library("sf")
 library("osmdata")
 library("raster")
 library("osmdata")
 library("taxize")
-library("geojsonsf")
 library("INLA")
 library("data.table")
+library("sp")
+library("spdep")
 ```
 
 
+# Where and Why are people generating iNaturalist data in Boulder County?
+
+  iNaturalist is a mobile application that allows people to take photos of plants or animals they encounter in their environment and returns the identification of that species so people can learn more about those species. The user takes a photo of any species they encounter and upload that photo to the cloud, along with the metadata for the time and location when the photo was taken. Cloud computation services then use an AI classification algorithm to identify a list of candidate species matching the photo and location and return those result to the user for verification. The verified observation is then added to an iNaturalist databases that already includes over 68 Million individual occurrence records after only a few years of operation. These records are available through an iNaturalist API, but those records are also dumped into the GBIF database, where they undergo a small round of quality control that clean up the data in a few minor ways. I access these data using the 'spocc' package in R, which consolidates the API protocols for several different species occurrence API services into a single API syntax housed in one package. The 'spocc' package also interacts natively with the 'taxis' package to clean and standardize species names and common names across all taxa. 
+  
+  This code is an example showing how to pull data for a single species from the GBIF database. This is a great way to get data for an individual species, but GBIF suggests you use their online tool, rather than their API, for downloading multiple species at one time. You can set up a for loop to automate a list of species, but that unnecessarily drives up maintenance costs for GBIF, and they will again point you back to the online tool. 
 ```{r, eval=FALSE}
 (df <- occ(query = 'Sciurus carolinensis', from = 'gbif',  has_coords = TRUE))
 df2 <- occ2df(df)
@@ -32,46 +40,43 @@ df3 <- df3[df3$latitude > 45  & df3$longitude > -74 & df3$longitude < -73 ,,drop
 df3
 ```
 
-
-
-```{r, warning=FALSE, message=FALSE}
-gbif <- fread("/Users/Ty/Desktop/rawData/0289344-200613084148143.csv",header=TRUE)
+  Here I upload the file that I downloaded from gbif.org. To create this file, I used GBIF's online tool to draw a bounding box around Boulder county and specified that I wanted all data with (1) Geographic coordinates, (2) No known errors, and (3) iNaturalist listed as thier provider. The provide that data in the form of a CSV, which I added to a folder called "rawData" in the working directory. These data come as a dataframe of occurance records, which each record taking a row and different variables taking the columns. The first thing I do is clean the names using the 'scrubr' package. Then I plot the raw data to make sure they meet my expectations. I'm checking  for annomolies that would be cause by improper loading,  like the wrong spatial extent or unexpectedly empty fields.
+  
+  
+```{r, warning=FALSE, message=FALSE, fig.cap="Plot of raw iNaturalist data"}
+gbif <- fread("rawData/0289344-200613084148143.csv",header=TRUE)
 GBIF <- gbif %>% scrubr::fix_names( how = 'shortest')
 
 plot(gbif$decimalLatitude, gbif$decimalLongitude)
 ```
 
-
+I did a quick automated data clean using the 'scrubr' package, but I wanted to go a few steps further to replace scientific names with common names when appropriate. Common names are common in some fields like Ornithology and Mammalogy, but they are uncommon in Botany and Microbiology. The corrections produced in this section reflect those customs and only favor common names for species where they're regularly provided in the iNaturalist dataset. I thinned the dataset to include only unique entries. This was largely about making this example smaller and easier to run quickly. There are repeated records from some notable individuals like birds of prey in public parks or notable  trees on people's walk to work. These individuals are recorded regularly and repeatedly and could be included in an  example less pressed from space.    
 ```{r, warning=FALSE, message=FALSE}
-
-
+# Thin to unique
 a <- sci2comm(as.character(unique(GBIF$verbatimScientificName)))
+
+
 common_names <- as.data.frame( unlist(a), byrow=TRUE, ncol=2)
 common_names <- cbind( rownames(common_names), common_names)
 names(common_names) <- c("verbatimScientificName","common_names")
-write.csv(common_names, file="/Users/Ty/Desktop/rawData/Common_names.csv")
-names(GBIF)
+write.csv(common_names, file="rawData/Common_names.csv")
+
 Common_GBIF <- GBIF %>% left_join(common_names, by="verbatimScientificName")
 Common_GBIF <- Common_GBIF[,c(51,14, 22,23 )] 
 Common_GBIF[which(is.na(Common_GBIF$common_names) == TRUE),1] <- Common_GBIF[which(is.na(Common_GBIF$common_names) == TRUE),2]
-library(sp)
+
 coords = data.frame(
   x=Common_GBIF$decimalLongitude,
   y=Common_GBIF$decimalLatitude
 )
-str(coords)
+
 GBIF_common_names <- as.data.frame(Common_GBIF$common_names)
 names(GBIF_common_names) <- "Common_names"
 
 sp_GBIF <- SpatialPointsDataFrame(coords,GBIF_common_names )
 st_GBIF <- st_as_sf(SpatialPointsDataFrame(coords,GBIF_common_names ))
 
-#spdf <- sf_geojson(st_as_sf(SpatialPointsDataFrame(coords,GBIF_common_names )))
 
-#geojsonio::geojson_write(spdf, file = "/Users/Ty/Desktop/rawData/Common_GBIF.geojson")
-
-#gbifA <- GBIF[1:450000,c(22,23,14, 51 )]
-#gbifB <- GBIF[450001:879096,c(22,23,51)]
 plot(st_GBIF, pch=19, cex=0.25)
 ```
 
@@ -96,7 +101,7 @@ plot(st_GBIF, pch=19, cex=0.25)
 
 
 ```{r, warning=FALSE, message=FALSE}
-library(dplyr)
+
 st_crs(st_GBIF) <- crs(hex_polys)
 intersection <- st_intersection(x = hex_polys, y = st_GBIF)
 
@@ -126,7 +131,7 @@ plot(hex_counts$geometry, lwd=0.001,
 ```
 
 ```{r, warning=FALSE, message=FALSE}
-library(spdep)
+
 hex_adj <- poly2nb(as(hex_counts, "Spatial") )
 
 plot(hex_counts$geometry, lwd=0.001, 
@@ -235,6 +240,23 @@ return(sf_area_points)
 ```
 
 ```{r}
+point_to_hex_count <- function(hex_polys, points){
+intersection <- st_intersection(x = hex_polys, y = points)
+
+counter <- rep(0, max(hex_polys$id_polygons))
+hex_count <- cbind(hex_polys, counter)
+
+counted <- intersection %>% 
+  group_by(id_polygons, .drop = FALSE) %>% 
+  count()
+
+hex_count$area[counted$id_polygons] <- counted$n
+
+return(hex_count)
+}
+
+
+
 point_to_hex_mean <- function(hex_polys, points){
 intersection <- st_intersection(x = hex_polys, y = points)
 
@@ -254,11 +276,11 @@ return(hex_area)
 
 ```{r, warning=FALSE, message=FALSE}
 green_pts <- covariate_hex_greens(greens)
-green_hex <- point_to_hex(hex_polys, green_pts)
-
+green_hex <- point_to_hex_mean(hex_polys, green_pts)
+hex <- green_hex
 plot_variable <- function(hex, variable ){
 plot(hex$geometry, lwd=0.001, 
-     col=hcl.colors(max(as.integer(variable), na.rm = TRUE), palette = "viridis", alpha = NULL, rev = TRUE, fixup = TRUE)[as.integer(variable, na.rm=TRUE)+1])
+     col=hcl.colors(max(as.integer(green_hex$area), na.rm = TRUE), palette = "viridis", alpha = NULL, rev = TRUE, fixup = TRUE)[as.integer(green_hex$area, na.rm=TRUE)+1])
 }
 plot_variable(green_hex, green_hex$area)
 ```
@@ -291,6 +313,7 @@ m0.re <- inla(species_richness ~ park_size_average + f(id_polygon), family = "po
 summary(m0)
 summary(m0.re)
 ```
+
 ```{r}
 
 hex_list$log_park_area <- log(hex_list$park_size_average)
