@@ -1,0 +1,405 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+```{r}
+library('tidyverse')
+library('spocc')
+library('mapr')
+library("scrubr")
+library(sf)
+library(osmdata)
+library(raster)
+library(osmdata)
+library(sf)
+```
+
+
+```{r}
+
+
+(df <- occ(query = 'Sciurus carolinensis', from = 'gbif',  has_coords = TRUE))
+df2 <- occ2df(df)
+class(df2)
+df3 <- dframe(df2) %>% scrubr::fix_names( how = 'shortest')
+
+#
+# dframe(sample_data_1) %>%
+#   coord_impossible() %>%
+#   coord_incomplete() %>%
+#   coord_unlikely()
+
+
+
+df3 <- df3[df3$latitude > 45  & df3$longitude > -74 & df3$longitude < -73 ,,drop=TRUE]
+df3
+```
+
+
+
+```{r}
+library(data.table)
+library(mapview)
+gbif <- fread("/Users/Ty/Desktop/rawData/0289344-200613084148143.csv",header=TRUE)
+GBIF <- gbif %>% scrubr::fix_names( how = 'shortest')
+
+
+#write.csv(gbifA, file="/Users/Ty/Dropbox/Dendritic connectivity/SUS2020/rawData/gbifA.csv")
+#write.csv(gbifB, file="/Users/Ty/Dropbox/Dendritic connectivity/SUS2020/rawData/gbifB.csv")
+
+mapview(gbif$decimalLatitude, gbif$decimalLongitude)
+```
+
+
+```{r, warning=FALSE, message=FALSE}
+library(taxize)
+library(sf)
+library(geojsonsf)
+library(rgdal) 
+#taxize::use_entrez()
+#ENTREZ_KEY='cea17cb44a0c99a698e23e376ea83567ce08'
+#usethis::edit_r_environ()
+#unique(GBIF$scientificName)
+
+
+a <- sci2comm(as.character(unique(GBIF$verbatimScientificName)))
+common_names <- as.data.frame( unlist(a), byrow=TRUE, ncol=2)
+common_names <- cbind( rownames(common_names), common_names)
+names(common_names) <- c("verbatimScientificName","common_names")
+write.csv(common_names, file="/Users/Ty/Desktop/rawData/Common_names.csv")
+names(GBIF)
+Common_GBIF <- GBIF %>% left_join(common_names, by="verbatimScientificName")
+Common_GBIF <- Common_GBIF[,c(51,14, 22,23 )] 
+Common_GBIF[which(is.na(Common_GBIF$common_names) == TRUE),1] <- Common_GBIF[which(is.na(Common_GBIF$common_names) == TRUE),2]
+library(sp)
+coords = data.frame(
+  x=Common_GBIF$decimalLongitude,
+  y=Common_GBIF$decimalLatitude
+)
+str(coords)
+GBIF_common_names <- as.data.frame(Common_GBIF$common_names)
+names(GBIF_common_names) <- "Common_names"
+
+sp_GBIF <- SpatialPointsDataFrame(coords,GBIF_common_names )
+st_GBIF <- st_as_sf(SpatialPointsDataFrame(coords,GBIF_common_names ))
+
+#spdf <- sf_geojson(st_as_sf(SpatialPointsDataFrame(coords,GBIF_common_names )))
+
+#geojsonio::geojson_write(spdf, file = "/Users/Ty/Desktop/rawData/Common_GBIF.geojson")
+
+#gbifA <- GBIF[1:450000,c(22,23,14, 51 )]
+#gbifB <- GBIF[450001:879096,c(22,23,51)]
+plot(st_GBIF, pch=19, cex=0.25)
+```
+
+```{r, warning=FALSE, message=FALSE}
+
+ ext <- as(extent(getbb ("Boulder County Colorado")) , "SpatialPolygons")
+  #class(ext)
+  #projection(ext) <- projection(Ps1)
+  crs(ext) <- "EPSG:4326"
+  h <- spsample(ext, type = "hexagonal", cellsize = 0.01)
+    # convert center points to hexagons
+    g <- HexPoints2SpatialPolygons(h, dx = 0.01)
+    g <- st_as_sf(g)
+  plot(g, lwd=0.1)
+  #points(pts$name.x, col="blue", cex=10)
+  hex_polys <- cbind(seq(1, length(g$geometry)), g)
+  colnames(hex_polys) <- c("id_polygons", "geometry") # change colnames
+
+
+```
+
+
+
+```{r, warning=FALSE, message=FALSE}
+library(dplyr)
+st_crs(st_GBIF) <- crs(hex_polys)
+intersection <- st_intersection(x = hex_polys, y = st_GBIF)
+
+int_result <- intersection %>% 
+  group_by(id_polygons) 
+
+plot(g, lwd=0.1)
+plot(int_result$geometry, pch=19, cex=0.25, col=adjustcolor("cornflowerblue", alpha.f = 0.2), add=TRUE)
+```
+```{r, warning=FALSE, message=FALSE}
+species_richness <- rep(0, max(hex_polys$id_polygons))
+hex_counts <- cbind(hex_polys, species_richness)
+
+int_count <- intersection %>% 
+  group_by(id_polygons, .drop = FALSE) %>% 
+  count()
+
+hex_counts$species_richness[int_count$id_polygons] <- int_count$n
+
+plot(hex_counts$geometry, lwd=0.001, 
+     col=grey.colors(max(hex_counts$species_richness), rev = TRUE, start=0, end=1)[hex_counts$species_richness+1])
+plot(int_result$geometry, pch=19, cex=0.05, col=adjustcolor("cornflowerblue", alpha.f = 0.2), add=TRUE)
+```
+```{r, warning=FALSE, message=FALSE}
+plot(hex_counts$geometry, lwd=0.001, 
+     col=hcl.colors(max(hex_counts$species_richness)+2, palette = "viridis", alpha = NULL, rev = TRUE, fixup = TRUE)[hex_counts$species_richness+1])
+```
+
+```{r, warning=FALSE, message=FALSE}
+library(spdep)
+hex_adj <- poly2nb(as(hex_counts, "Spatial") )
+
+plot(hex_counts$geometry, lwd=0.001, 
+     col=hcl.colors(max(hex_counts$species_richness)+2, palette = "viridis", alpha = NULL, rev = TRUE, fixup = TRUE)[hex_counts$species_richness+1])
+plot(hex_adj, coordinates(as(hex_counts, "Spatial")), col="darkblue", lwd=0.2, add=TRUE)
+
+```
+
+
+
+Co-variates
+
+```{r}
+
+name <- "Boulder County Colorado"
+
+try(my_bbox <- osmdata::getbb (name))
+
+my_bbox[1,1] <- my_bbox[1,1] + 0.02
+
+
+dat1 <- opq(bbox = my_bbox, timeout = 900) %>%
+    add_osm_feature(key = 'leisure', value = 'park') %>%
+    osmdata_sf ()
+dat2 <- opq(bbox = my_bbox, timeout = 900) %>%
+    add_osm_feature(key = 'leisure', value = 'garden') %>%
+    osmdata_sf ()
+dat3 <- opq(bbox = my_bbox, timeout = 900) %>%
+    add_osm_feature(key = 'leisure', value = 'nature_reserve') %>%
+    osmdata_sf ()
+dat4 <- opq(bbox = my_bbox, timeout = 900) %>%
+    add_osm_feature(key = 'leisure', value = 'dog_park') %>%
+    osmdata_sf ()
+dat5 <- opq(bbox = my_bbox, timeout = 900) %>%
+    add_osm_feature(key = 'leisure', value = 'common') %>%
+    osmdata_sf ()
+dat6 <- opq(bbox = my_bbox, timeout = 900) %>%
+    add_osm_feature(key = 'leisure', value = 'pitch') %>%
+    osmdata_sf ()
+dat7 <- opq(bbox = my_bbox, timeout = 900) %>%
+    add_osm_feature(key = 'leisure', value = 'horse_riding') %>%
+    osmdata_sf ()
+dat8 <- opq(bbox = my_bbox, timeout = 900) %>%
+    add_osm_feature(key = 'natural', value = 'wood') %>%
+    osmdata_sf ()
+greens <- c (dat1, dat2, dat3, dat4, dat5, dat6, dat7, dat8)
+
+
+buildings <- opq(bbox = my_bbox, timeout = 900) %>%
+    add_osm_feature(key = 'building') %>%
+    osmdata_sf ()
+
+roads <- opq(bbox = my_bbox, timeout = 900) %>%
+    add_osm_feature(key = 'landuse', value = 'residential') %>%
+    osmdata_sf ()
+
+agriculture <- opq(bbox = my_bbox, timeout = 900) %>%
+    add_osm_feature(key = 'landuse', value = 'farmland') %>%
+    osmdata_sf()
+
+
+```
+
+```{r}
+plot(hex_counts$geometry, lwd=0.001, 
+     col=hcl.colors(max(hex_counts$species_richness), palette = "viridis", alpha = 0, rev = TRUE, fixup = TRUE)[hex_counts$species_richness+1])
+plot(greens$osm_polygons[1], add=TRUE, lwd=0.01, col=adjustcolor("grey", alpha.f = 1))
+plot(greens$osm_multipolygons[1], add=TRUE, lwd=0.01, col=adjustcolor("grey", alpha.f = 1))
+#plot(buildings$osm_polygons[1], add=TRUE, lwd=0.01, col=adjustcolor("black", alpha.f = 1))
+plot(hex_counts$geometry, lwd=0.001, 
+     col=hcl.colors(max(hex_counts$species_richness)+2, palette = "viridis", alpha = 0.8, rev = TRUE, fixup = TRUE)[hex_counts$species_richness+1], add=TRUE)
+```
+
+Assign covariates to the hex grid
+
+```{r}
+covariate_hex_greens <- function(sf_object){
+
+if(length(sf_object$osm_multipolygons) > 0){
+  poly_area <- st_area(sf_object$osm_polygons)
+multi_poly_area <- st_area(sf_object$osm_multipolygons)
+log_area1 <- as.data.frame(as.numeric(log(poly_area)))
+log_area2 <- as.data.frame(as.numeric(log(multi_poly_area)))
+names(log_area1) <- "log_area"
+names(log_area2) <- "log_area"
+log_area <- rbind(log_area1, log_area2) 
+
+coords <- rbind(sf_object$osm_polygons %>% st_centroid() %>% st_coordinates(), 
+                sf_object$osm_multipolygons %>% st_centroid() %>% st_coordinates())
+} else {
+  poly_area <- st_area(sf_object$osm_polygons)
+log_area <- as.data.frame(as.numeric(log(poly_area)))
+names(log_area) <- "log_area"
+
+coords <- sf_object$osm_polygons %>% st_centroid() %>% st_coordinates()
+}
+
+if(length(coords[,1]) != length(log_area[,1])) stop("wrong length")
+area_points <- cbind(log_area, coords)
+colnames(area_points)[2:3] <- c("longitude", "latitude")
+sf_area_points <- st_as_sf(area_points, coords = c("longitude", "latitude"), 
+    crs = 4326, agr = "constant")
+
+return(sf_area_points)
+}
+```
+
+```{r}
+point_to_hex_mean <- function(hex_polys, points){
+intersection <- st_intersection(x = hex_polys, y = points)
+
+area <- rep(0, max(hex_polys$id_polygons))
+hex_area <- cbind(hex_polys, area)
+
+avg_area <- intersection %>% 
+  group_by(id_polygons, .drop = FALSE) %>% 
+  summarise(mean = mean(points))
+
+hex_area$area[avg_area$id_polygons] <- avg_area$mean
+
+return(hex_area)
+}
+
+```
+
+```{r, warning=FALSE, message=FALSE}
+green_pts <- covariate_hex_greens(greens)
+green_hex <- point_to_hex(hex_polys, green_pts)
+
+plot_variable <- function(hex, variable ){
+plot(hex$geometry, lwd=0.001, 
+     col=hcl.colors(max(as.integer(variable), na.rm = TRUE), palette = "viridis", alpha = NULL, rev = TRUE, fixup = TRUE)[as.integer(variable, na.rm=TRUE)+1])
+}
+plot_variable(green_hex, green_hex$area)
+```
+
+
+
+```{r}
+hex_list <- st_drop_geometry(hex_counts) %>% inner_join(as.data.frame(hex_green_area), by="id_polygons") 
+colnames(hex_list) <- c("id_polygon", "species_richness", "park_size_average","geometry")
+hex_list
+```
+
+
+
+
+```{r}
+library("INLA")
+
+#Log-Poisson regression
+m0 <- inla(species_richness ~ park_size_average, family = "poisson",
+  data = as.data.frame(hex_list) )
+
+#Log-Poisson regression with random effects
+
+m0.re <- inla(species_richness ~ park_size_average + f(id_polygon), family = "poisson",
+  data = as.data.frame(hex_list) )
+```
+
+```{r}
+summary(m0)
+summary(m0.re)
+```
+```{r}
+
+hex_list$log_park_area <- log(hex_list$park_size_average)
+hex_list[which(is.infinite(hex_list$log_park_area) == TRUE),"log_park_area"] <- 0
+
+#RW2d
+m0.rw2d <- inla(species_richness ~ log_park_area +
+    f(id_polygon, model = "rw2d", nrow =64, ncol = 41),
+  family = "poisson", data = as.data.frame(hex_list),
+  control.predictor = list(compute = TRUE),
+  control.compute = list(dic = TRUE) )
+
+summary(m0.rw2d)
+
+hex_list$RW2D <- m0.rw2d$summary.fitted.values[, "0.5quant"]
+hex_list$RW2Dsd <- m0.rw2d$summary.fitted.values[, "sd"]
+```
+
+```{r}
+#plot_variable(hex_list, floor(hex_list$RW2D))
+
+model_predict <- as.integer(hex_list$RW2D)
+model_predict[which(is.na(model_predict) == TRUE)] <- 0 
+#model_predict[which(model_predict < 0)] <- 0 
+#model_predict[which(model_predict > 20)] <- 0 
+
+plot(hex_counts$geometry, lwd=0.001, 
+     col=hcl.colors(max(hex_counts$species_richness)+2, palette = "viridis", alpha = NULL, rev = TRUE, fixup = FALSE)[hex_counts$species_richness+1])
+
+plot(hex_list$geometry, lwd=0.001, 
+     col=hcl.colors(max(hex_counts$species_richness)+2, palette = "viridis", alpha = NULL, rev = TRUE, fixup = FALSE)[model_predict+1])
+#plot(int_result$geometry, pch=19, cex=0.05, col=adjustcolor("cornflowerblue", alpha.f = 0.2), add=TRUE)
+```
+
+
+
+```{r}
+bei.trees2$RW2D <- m0.rw2d$summary.fitted.values[, "mean"]
+
+bei.trees2$MATERN2D <- m0.m2d$summary.fitted.values[, "mean"]
+```
+
+
+```{r}
+g_sf <- st_as_sf(g)
+HQ <- raster::extract(raster_this_HQ,  g_sf , fun = sum, na.rm = TRUE, df = TRUE, normalizeWeights=TRUE)  
+```
+
+
+
+
+```{r}
+library(INLA)
+n = 100; a = 1; b = 1; tau = 100
+z = rnorm(n)
+eta = a + b*z
+
+scale = exp(rnorm(n))
+prec = scale*tau
+y = rnorm(n, mean = eta, sd = 1/sqrt(prec))
+
+
+data = list(y=y, z=z)
+formula = y ~ 1+z
+result = inla(formula, family = "gaussian", data = sp_GBIF)
+
+summary(result)
+```
+
+```{r}
+fig.plots <- ggplot() + 
+  gg(sp_GBIF,color = "blue") 
+fig.plots
+```
+
+```{r}
+library("spatstat")
+library("sp")
+library("maptools")
+
+data(bei)
+
+# Create SpatialPoints object
+bei.pts <- as(bei, "SpatialPoints")
+```
+
+
+
+```{r}
+bei.poly <- as(as.im(bei$window, dimyx=c(5, 10)), "SpatialGridDataFrame")
+bei.poly <- as(bei.poly, "SpatialPolygons")
+```
+
