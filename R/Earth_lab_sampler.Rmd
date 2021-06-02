@@ -4,34 +4,29 @@ output: html_notebook
 ---
 
 
-```{r}
+```{r, warning=FALSE, message=FALSE}
+library("rgdal") 
+library("sf")
 library('tidyverse')
 library('spocc')
 library('mapr')
 library("scrubr")
-library(sf)
-library(osmdata)
-library(raster)
-library(osmdata)
-library(sf)
+library("sf")
+library("osmdata")
+library("raster")
+library("osmdata")
+library("taxize")
+library("geojsonsf")
+library("INLA")
+library("data.table")
 ```
 
 
-```{r}
-
-
+```{r, eval=FALSE}
 (df <- occ(query = 'Sciurus carolinensis', from = 'gbif',  has_coords = TRUE))
 df2 <- occ2df(df)
 class(df2)
 df3 <- dframe(df2) %>% scrubr::fix_names( how = 'shortest')
-
-#
-# dframe(sample_data_1) %>%
-#   coord_impossible() %>%
-#   coord_incomplete() %>%
-#   coord_unlikely()
-
-
 
 df3 <- df3[df3$latitude > 45  & df3$longitude > -74 & df3$longitude < -73 ,,drop=TRUE]
 df3
@@ -39,29 +34,15 @@ df3
 
 
 
-```{r}
-library(data.table)
-library(mapview)
+```{r, warning=FALSE, message=FALSE}
 gbif <- fread("/Users/Ty/Desktop/rawData/0289344-200613084148143.csv",header=TRUE)
 GBIF <- gbif %>% scrubr::fix_names( how = 'shortest')
 
-
-#write.csv(gbifA, file="/Users/Ty/Dropbox/Dendritic connectivity/SUS2020/rawData/gbifA.csv")
-#write.csv(gbifB, file="/Users/Ty/Dropbox/Dendritic connectivity/SUS2020/rawData/gbifB.csv")
-
-mapview(gbif$decimalLatitude, gbif$decimalLongitude)
+plot(gbif$decimalLatitude, gbif$decimalLongitude)
 ```
 
 
 ```{r, warning=FALSE, message=FALSE}
-library(taxize)
-library(sf)
-library(geojsonsf)
-library(rgdal) 
-#taxize::use_entrez()
-#ENTREZ_KEY='cea17cb44a0c99a698e23e376ea83567ce08'
-#usethis::edit_r_environ()
-#unique(GBIF$scientificName)
 
 
 a <- sci2comm(as.character(unique(GBIF$verbatimScientificName)))
@@ -294,7 +275,7 @@ hex_list
 
 
 ```{r}
-library("INLA")
+
 
 #Log-Poisson regression
 m0 <- inla(species_richness ~ park_size_average, family = "poisson",
@@ -358,48 +339,4 @@ g_sf <- st_as_sf(g)
 HQ <- raster::extract(raster_this_HQ,  g_sf , fun = sum, na.rm = TRUE, df = TRUE, normalizeWeights=TRUE)  
 ```
 
-
-
-
-```{r}
-library(INLA)
-n = 100; a = 1; b = 1; tau = 100
-z = rnorm(n)
-eta = a + b*z
-
-scale = exp(rnorm(n))
-prec = scale*tau
-y = rnorm(n, mean = eta, sd = 1/sqrt(prec))
-
-
-data = list(y=y, z=z)
-formula = y ~ 1+z
-result = inla(formula, family = "gaussian", data = sp_GBIF)
-
-summary(result)
-```
-
-```{r}
-fig.plots <- ggplot() + 
-  gg(sp_GBIF,color = "blue") 
-fig.plots
-```
-
-```{r}
-library("spatstat")
-library("sp")
-library("maptools")
-
-data(bei)
-
-# Create SpatialPoints object
-bei.pts <- as(bei, "SpatialPoints")
-```
-
-
-
-```{r}
-bei.poly <- as(as.im(bei$window, dimyx=c(5, 10)), "SpatialGridDataFrame")
-bei.poly <- as(bei.poly, "SpatialPolygons")
-```
 
