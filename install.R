@@ -4,9 +4,7 @@ install.packages(c("tidyverse",
                    "scrubr", "osmdata", "raster",
                    "osmdata", "mapr" , "maptools",
                    "geojsonsf","rgdal", "taxize",
-                   "data.table", "mapview", "INLA"
-                   
-                   ))
+                   "data.table", "mapview", "INLA" ))
 
 
 
