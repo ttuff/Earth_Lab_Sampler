@@ -1,12 +1,13 @@
 ---
-title: "R Notebook"
-output: 
+title: "Ty Tuff's submitted code sample"
+output:
+  pdf_document: default
+  html_notebook: null
+  bookdown::pdf_book:
+    base_format: rticles::jss_article
   html_document:
     code_folding: show
     keep_md: yes
-  html_notebook:
-  bookdown::pdf_book:
-    base_format: rticles::jss_article  
 ---
 
 
@@ -162,6 +163,7 @@ plot(int_result$geometry, pch=19, cex=0.05, col=adjustcolor("cornflowerblue", al
 plot(hex_counts$geometry, lwd=0.001, 
      col=hcl.colors(max(hex_counts$species_richness)+2, palette = "viridis", alpha = NULL, rev = TRUE, fixup = TRUE)[hex_counts$species_richness+1])
 ```
+
 ### Adjacency matrix 
   We need to include a list of neighbor relationships as a random co-variate in our model. Her we calculate that adjacency matrix using a function that takes a list of polygons and returns the adjacency matrix. I give this function the hexagon grid, which is built of hexagonal polygons with centroids, and the function calculates the adjacency relationships for all those centroids. 
 ```{r, warning=FALSE, message=FALSE}
