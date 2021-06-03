@@ -1,11 +1,4 @@
 Ty Tuff’s submitted code sample
-
-# Earth_Lab_Sampler
- This is a work sample submitted by Ty Tuff as part of his application to become the next data scientist for CIRES Earth Lab.
-
-This binder only partially works. Docker won't load gdal, which is a dependency for several important 
- mapping functions. [![Binder](https://mybinder.org/badge_logo.svg)]( http://mybinder.org/v2/gh/ttuff/Earth_Lab_Sampler/main?urlpath=rstudio)
-
 ================
 
 ``` r fold-hide
@@ -483,12 +476,12 @@ head(hex_list)
 ```
 
     ##   id_polygon species_richness park_size_average                       geometry
-    ## 1          1                0                 0 POLYGON ((-105.6917 39.9254...
-    ## 2          2                0                 0 POLYGON ((-105.6817 39.9254...
-    ## 3          3                0                 0 POLYGON ((-105.6717 39.9254...
-    ## 4          4                0                 0 POLYGON ((-105.6617 39.9254...
-    ## 5          5                0                 0 POLYGON ((-105.6517 39.9254...
-    ## 6          6                0                 0 POLYGON ((-105.6417 39.9254...
+    ## 1          1                0                 0 POLYGON ((-105.6911 39.9248...
+    ## 2          2                0                 0 POLYGON ((-105.6811 39.9248...
+    ## 3          3                0                 0 POLYGON ((-105.6711 39.9248...
+    ## 4          4                0                 0 POLYGON ((-105.6611 39.9248...
+    ## 5          5                0                 0 POLYGON ((-105.6511 39.9248...
+    ## 6          6                0                 0 POLYGON ((-105.6411 39.9248...
 
 ### INLA Bayesian inference
 
@@ -513,11 +506,11 @@ summary(m0.rw2d)
     ##    data = as.data.frame(hex_list), control.compute = list(dic = TRUE), ", 
     ##    " control.predictor = list(compute = TRUE))") 
     ## Time used:
-    ##     Pre = 3.66, Running = 15.4, Post = 0.336, Total = 19.3 
+    ##     Pre = 4.21, Running = 14.4, Post = 0.333, Total = 19 
     ## Fixed effects:
     ##                 mean    sd 0.025quant 0.5quant 0.975quant   mode kld
-    ## (Intercept)   -5.597 0.459     -6.581   -5.567     -4.781 -5.505   0
-    ## log_park_area  0.079 0.056     -0.031    0.079      0.188  0.079   0
+    ## (Intercept)   -5.575 0.442     -6.524   -5.546     -4.787 -5.488   0
+    ## log_park_area  0.108 0.055      0.000    0.108      0.216  0.108   0
     ## 
     ## Random effects:
     ##   Name     Model
@@ -525,16 +518,16 @@ summary(m0.rw2d)
     ## 
     ## Model hyperparameters:
     ##                           mean    sd 0.025quant 0.5quant 0.975quant  mode
-    ## Precision for id_polygon 0.043 0.003      0.037    0.043       0.05 0.043
+    ## Precision for id_polygon 0.042 0.003      0.036    0.042      0.049 0.041
     ## 
-    ## Expected number of effective parameters(stdev): 736.71(12.33)
-    ## Number of equivalent replicates : 3.45 
+    ## Expected number of effective parameters(stdev): 747.33(12.44)
+    ## Number of equivalent replicates : 3.40 
     ## 
-    ## Deviance Information Criterion (DIC) ...............: 6070.08
-    ## Deviance Information Criterion (DIC, saturated) ....: 4448.64
-    ## Effective number of parameters .....................: 1925.39
+    ## Deviance Information Criterion (DIC) ...............: 6093.34
+    ## Deviance Information Criterion (DIC, saturated) ....: 4471.39
+    ## Effective number of parameters .....................: 1933.31
     ## 
-    ## Marginal log-Likelihood:  -5312.47 
+    ## Marginal log-Likelihood:  -5334.88 
     ## Posterior marginals for the linear predictor and
     ##  the fitted values are computed
 
