@@ -340,21 +340,25 @@ head(hex_list)
 
 
 ### INLA Bayesian inference
-
-```{r}
-
+ The standard method for modern day model fitting is to use Markov chains to search for parameter values that allow equations to describe mechanisms for creating data. MCMC is a slow an laborious process because it searches continuous numerical space to find the lowest point of that surface, which represents the highest probability value. Integrated Nested Laplace Approximation (INLA) is a deterministic Bayesian method that approximates the same probability surface using triangular tessellation to simplify the surface and then search for minima on that approximated surface. Tessellating this surface has the potential to smooth over the global maxima to lower the precision of the extimate, but it can find that slightly less precise estimate orders of magnitude faster. Even if you want to use MCMC for the final model fit, INLA can quickly give you very good approximations of the continuous minimum values.     
+  Here I set up a linear model using familiar GLMM syntax. Species richness is the response variable being predicted by the covariates. The covariates included in this model are park size (e.g. mean area for all parks in each hexagon), a random effect (e.g. polygon ID), and the adjacency matrix defined by the hexagonal grid. I use a poisson link function because my iNaturalist data are counts and the poisson distribution is the distribution for count data.  
+```{r, warning=FALSE, message=FALSE}
+# Park sizes spanned such a great range of values that the a few massive open spaces dominated the analysis. I softened that effect by log transforming park area averages.   
 hex_list$log_park_area <- log(hex_list$park_size_average)
 hex_list[which(is.infinite(hex_list$log_park_area) == TRUE),"log_park_area"] <- 0
 
-#RW2d
+#This version of the inla model represents the adjacency matrix using a 2d random walk around the mesh grid.
+#Run the model
 m0.rw2d <- inla(species_richness ~ log_park_area +
     f(id_polygon, model = "rw2d", nrow =64, ncol = 41),
   family = "poisson", data = as.data.frame(hex_list),
   control.predictor = list(compute = TRUE),
   control.compute = list(dic = TRUE) )
 
+# Print a summary of the model results. This is a single model, so no model comparisons happen yet. 
 summary(m0.rw2d)
 
+# Pass summary results back to the dataset so we can map them. 
 hex_list$RW2D <- m0.rw2d$summary.fitted.values[, "0.5quant"]
 hex_list$RW2Dsd <- m0.rw2d$summary.fitted.values[, "sd"]
 ```
@@ -362,34 +366,24 @@ hex_list$RW2Dsd <- m0.rw2d$summary.fitted.values[, "sd"]
 
 
 ### Plot the mean predicted values from the model. 
-```{r}
-#plot_variable(hex_list, floor(hex_list$RW2D))
-
-model_predict <- as.integer(hex_list$RW2D)
+  A plot of our results show that green space area is remarkably predictive of iNaturalist species richness. The three major clusters in iNaturalist data match the three major clusters in green space area. 
+```{r, warning=FALSE, message=FALSE}
+model_predict <- floor(hex_list$RW2D)
 model_predict[which(is.na(model_predict) == TRUE)] <- 0 
-#model_predict[which(model_predict < 0)] <- 0 
-#model_predict[which(model_predict > 20)] <- 0 
-
-plot(hex_counts$geometry, lwd=0.001, 
-     col=hcl.colors(max(hex_counts$species_richness)+2, palette = "viridis", alpha = NULL, rev = TRUE, fixup = FALSE)[hex_counts$species_richness+1])
 
 plot(hex_list$geometry, lwd=0.001, 
-     col=hcl.colors(max(hex_counts$species_richness)+2, palette = "viridis", alpha = NULL, rev = TRUE, fixup = FALSE)[model_predict+1])
-#plot(int_result$geometry, pch=19, cex=0.05, col=adjustcolor("cornflowerblue", alpha.f = 0.2), add=TRUE)
+     col=hcl.colors(max(floor(hex_list$RW2D))+2, palette = "viridis", alpha = NULL, rev = TRUE, fixup = FALSE)[floor(hex_list$RW2D)+1])
 ```
 
-
-
-```{r, eval=FALSE}
-bei.trees2$RW2D <- m0.rw2d$summary.fitted.values[, "mean"]
-
-bei.trees2$MATERN2D <- m0.m2d$summary.fitted.values[, "mean"]
+### Is the fit good?
+  There are not P-values in INLA. Where an MCMC fit would use AIC values to compare different model fits, INLA uses a DIC or Deviance information criterion. In the figure below, we want our confidence intervals to NOT overlap zero. My predictor variable overlaps zero at the very lower tail of its distribution, but largely avoids it. This is a good indication that the species richness of iNaturalist records can be fairly accurately predicted by the area of green space and the adjacency of that green space to other green space. 
+  
+```{r, warning=FALSE, message=FALSE}
+Efxplot(list(m0.rw2d))
 ```
 
+### Next Steps
+  To publish this analysis, I would need to build a few competing models representing different hypotheses and compare those models against each other using DIC model comparison. Each model will need to be internally tested to see if it should include random effects or not. The suite of competing models should be compared against each other using DIC to assign the best hypothesis given the data and the models presented.   
 
-```{r, eval=FALSE}
-g_sf <- st_as_sf(g)
-HQ <- raster::extract(raster_this_HQ,  g_sf , fun = sum, na.rm = TRUE, df = TRUE, normalizeWeights=TRUE)  
-```
 
 
