@@ -1,14 +1,14 @@
 ---
 title: "Ty Tuff's submitted code sample"
 output:
-  rmarkdown::github_document: default
+  pdf_document: default
   html_notebook: null
   bookdown::pdf_book:
     base_format: rticles::jss_article
   html_document:
     code_folding: show
     keep_md: true
-  pdf_document: default
+  rmarkdown::github_document: default
 ---
 # Earth_Lab_Sampler
  This is a work sample submitted by Ty Tuff as part of his application to become the next data scientist for CIRES Earth Lab.
