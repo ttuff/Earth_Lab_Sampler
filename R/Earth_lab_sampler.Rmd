@@ -154,7 +154,8 @@ plot(hex_counts$geometry, lwd=0.001,
      col=grey.colors(max(hex_counts$species_richness), rev = TRUE, start=0, end=1)[hex_counts$species_richness+1])
 plot(int_result$geometry, pch=19, cex=0.05, col=adjustcolor("cornflowerblue", alpha.f = 0.2), add=TRUE)
 ```
-#### Plot species richness using a fancy color scheme that works well for color-blind people. 
+
+#### Plot species richness using a fancy color scheme that works well for color-blind people 
   A count of the number of species in an area is called species richness. Species richness is a common proxy variable used to describe differences between ecosystems or health within a single ecosystem. It provides an incomplete description of an ecosystem, but species richness is still frequently used as a good indicator of ecosystem type and health because more complex ecosystems have more species and so, the number of species can often approximate complexity and complexity is a defining feature of ecosystems. 
 
 ```{r, warning=FALSE, message=FALSE, fig.cap="Species richness of iNaturalist records in 2021"}
