@@ -1,4 +1,9 @@
-Ty Tuff’s submitted code sample
+# Earth_Lab_Sampler
+ This is a work sample submitted by Ty Tuff as part of his application to become the next data scientist for CIRES Earth Lab.
+
+This icon links to a binder for this repository. MyBinder was unable to install gdal, which is an essential package for a number of other packages and functions in this script. Accordingly, this binder is not very useful because it can't successfully execute the code but it can show you what Rstudio looks like. [![Binder](https://mybinder.org/badge_logo.svg)]( http://mybinder.org/v2/gh/ttuff/Earth_Lab_Sampler/main?urlpath=rstudio)
+
+
 ================
 
 ``` r fold-hide
