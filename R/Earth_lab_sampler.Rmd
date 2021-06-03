@@ -1,9 +1,10 @@
 ---
 title: "R Notebook"
 output: 
-  html_notebook:
   html_document:
     code_folding: show
+    keep_md: yes
+  html_notebook:
   bookdown::pdf_book:
     base_format: rticles::jss_article  
 ---
@@ -53,10 +54,13 @@ GBIF <- gbif %>% scrubr::fix_names( how = 'shortest')
 plot(gbif$decimalLatitude, gbif$decimalLongitude)
 ```
 
-I did a quick automated data clean using the 'scrubr' package, but I wanted to go a few steps further to replace scientific names with common names when appropriate. Common names are common in some fields like Ornithology and Mammalogy, but they are uncommon in Botany and Microbiology. The corrections produced in this section reflect those customs and only favor common names for species where they're regularly provided in the iNaturalist dataset. I thinned the dataset to include only unique entries. This was largely about making this example smaller and easier to run quickly. There are repeated records from some notable individuals like birds of prey in public parks or notable  trees on people's walk to work. These individuals are recorded regularly and repeatedly and could be included in an  example less pressed from space.    
-```{r, warning=FALSE, message=FALSE}
+I did a quick automated data clean using the 'scrubr' package, but I wanted to go a few steps further to replace scientific names with common names when appropriate. Common names are common in some fields like Ornithology and Mammalogy, but they are uncommon in Botany and Microbiology. The corrections produced in this section reflect those customs and only favor common names for species where they're regularly provided in the iNaturalist dataset. I thinned the dataset to include only unique entries. This was largely about making this example smaller and easier to run quickly. There are repeated records from some notable individuals like birds of prey in public parks or notable  trees on people's walk to work. These individuals are recorded regularly and repeatedly and could be included in an  example less pressed from space. 
+```{r, warning=FALSE, message=FALSE, cache=TRUE,results='hide'}
 # Thin to unique
 a <- sci2comm(as.character(unique(GBIF$verbatimScientificName)))
+```
+
+```{r, warning=FALSE, message=FALSE, cache=TRUE}
 
 # Make a list of matches between scientific names and common names
 common_names <- as.data.frame( unlist(a), byrow=TRUE, ncol=2)
@@ -88,7 +92,7 @@ plot(st_GBIF, pch=19, cex=0.25)
 
 ### Hexagon grid to aggregate data for standardized analysis
   Sampling scheme is a critical component to any analysis. I sample the points above by laying a hexagonal grid over the occurrence points and aggregating those points into those hex bins for modeling. For a 2D spatial analysis like the one we're doing here, I prefer a hexagon lattice over a square lattice because it has a more symmetrical adjacency matrix. In a square lattice, the diagonals between cells are longer than the horizontal and vertical distances. In hexagonal grids, all adjacency distances are equal. This code creates the hex grid to be used below for sampling. The extent of this grid is set by the Boulder County bounding box and he resolution was set to be rather course to speed up computation time and keep this example light and fast.    
-```{r, warning=FALSE, message=FALSE,  fig.cap="Freshly constructed hexagonal sampling grid"}
+```{r, warning=FALSE, message=FALSE,  fig.cap="Freshly constructed hexagonal sampling grid", cache=TRUE}
 # Define bounding box
  ext <- as(extent(getbb ("Boulder County Colorado")) , "SpatialPolygons")
 
@@ -117,7 +121,7 @@ plot(st_GBIF, pch=19, cex=0.25)
   
 #### Inspect the points overlaying the grid.
 
-```{r, warning=FALSE, message=FALSE, fig.cap="Hexagon grid laid over a distribution of iNaturalist points"}
+```{r, warning=FALSE, message=FALSE, fig.cap="Hexagon grid laid over a distribution of iNaturalist points", cache=TRUE}
 st_crs(st_GBIF) <- crs(hex_polys)
 intersection <- st_intersection(x = hex_polys, y = st_GBIF)
 
@@ -174,7 +178,7 @@ plot(hex_adj, coordinates(as(hex_counts, "Spatial")), col="darkblue", lwd=0.2, a
 #### Open Street Map data
   On of my favorite datasets to use on a daily basis is Open Street Map. It is an amazing resource for a suite of different data about land use, amenities, administrative boundaries, points of interest, routing, and construction. The code below pulls polygons and multipolygons from the OSM API based on value/key pairs. I picked each value/key pair using the OSM tags wiki website, which catalogs all the available data in OSM. I search for different tags that described green space and I wrote a new API call for each value/key pair that I thought applicable. I concatenate those individual data requests into a single green space dataset. I then make three more individual calls to retrive data for buildings, roads, and agricultural fields. I think each of these may be contributing to our response variable so, I have left as individual dataframes so they can be treated individually in the modeling process.  
 
-```{r}
+```{r, cache=TRUE}
 name <- "Boulder County Colorado"
 
 try(my_bbox <- osmdata::getbb (name))
@@ -321,9 +325,9 @@ plot_variable(green_hex, green_hex$area)
 ### Combine Species richness and covariates into the same dataframe for analysis. 
  In the previous code, I have created two spatial objects that are both hex grids with aggregated data assigned to each bin. To combine those sets, I first drop the geometry from one of the two because the geometries are identical and they will show up as duplicates in the combined dataset. After droping the geometry from one, I do a left join so they match polygonID values and then everything shares the single remaining geometry column.  
 ```{r}
-hex_list <- st_drop_geometry(hex_counts) %>% inner_join(as.data.frame(hex_green_area), by="id_polygons") 
+hex_list <- st_drop_geometry(hex_counts) %>% inner_join(as.data.frame(green_hex), by="id_polygons") 
 colnames(hex_list) <- c("id_polygon", "species_richness", "park_size_average","geometry")
-hex_list
+head(hex_list)
 ```
 
 
@@ -368,14 +372,14 @@ plot(hex_list$geometry, lwd=0.001,
 
 
 
-```{r}
+```{r, eval=FALSE}
 bei.trees2$RW2D <- m0.rw2d$summary.fitted.values[, "mean"]
 
 bei.trees2$MATERN2D <- m0.m2d$summary.fitted.values[, "mean"]
 ```
 
 
-```{r}
+```{r, eval=FALSE}
 g_sf <- st_as_sf(g)
 HQ <- raster::extract(raster_this_HQ,  g_sf , fun = sum, na.rm = TRUE, df = TRUE, normalizeWeights=TRUE)  
 ```
