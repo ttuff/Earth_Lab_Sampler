@@ -1,14 +1,3 @@
----
-title: "R Notebook"
-output: 
-  html_document:
-    code_folding: show
-    keep_md: yes
-  html_notebook:
-  bookdown::pdf_book:
-    base_format: rticles::jss_article  
----
-
 # Earth_Lab_Sampler
  This is a work sample submitted by Ty Tuff as part of his application to become the next data scientist for CIRES Earth Lab.
 
