@@ -1,10 +1,14 @@
+Ty Tuff’s submitted code sample
+
 # Earth_Lab_Sampler
  This is a work sample submitted by Ty Tuff as part of his application to become the next data scientist for CIRES Earth Lab.
 
 This binder only partially works. Docker won't load gdal, which is a dependency for several important 
  mapping functions. [![Binder](https://mybinder.org/badge_logo.svg)]( http://mybinder.org/v2/gh/ttuff/Earth_Lab_Sampler/main?urlpath=rstudio)
 
-```{.r .fold-hide}
+================
+
+``` r fold-hide
 library("rgdal") 
 library("sf")
 library('tidyverse')
@@ -21,15 +25,39 @@ library("sp")
 library("spdep")
 ```
 
-
 # Where and Why are people generating iNaturalist data in Boulder County?
 
-  iNaturalist is a mobile application that allows people to take photos of plants or animals they encounter in their environment and returns the identification of that species so people can learn more about those species. The user takes a photo of any species they encounter and upload that photo to the cloud, along with the metadata for the time and location when the photo was taken. Cloud computation services then use an AI classification algorithm to identify a list of candidate species matching the photo and location and return those result to the user for verification. The verified observation is then added to an iNaturalist databases that already includes over 68 Million individual occurrence records after only a few years of operation. These records are available through an iNaturalist API, but those records are also dumped into the GBIF database, where they undergo a small round of quality control that clean up the data in a few minor ways. I access these data using the 'spocc' package in R, which consolidates the API protocols for several different species occurrence API services into a single API syntax housed in one package. The 'spocc' package also interacts natively with the 'taxis' package to clean and standardize species names and common names across all taxa. 
-  
-### iNaturalist API
-  This code is an example showing how to pull data for a single species from the GBIF database. This is a great way to get data for an individual species, but GBIF suggests you use their online tool, rather than their API, for downloading multiple species at one time. You can set up a for loop to automate a list of species, but that unnecessarily drives up maintenance costs for GBIF, and they will again point you back to the online tool. 
+iNaturalist is a mobile application that allows people to take photos of
+plants or animals they encounter in their environment and returns the
+identification of that species so people can learn more about those
+species. The user takes a photo of any species they encounter and upload
+that photo to the cloud, along with the metadata for the time and
+location when the photo was taken. Cloud computation services then use
+an AI classification algorithm to identify a list of candidate species
+matching the photo and location and return those result to the user for
+verification. The verified observation is then added to an iNaturalist
+databases that already includes over 68 Million individual occurrence
+records after only a few years of operation. These records are available
+through an iNaturalist API, but those records are also dumped into the
+GBIF database, where they undergo a small round of quality control that
+clean up the data in a few minor ways. I access these data using the
+‘spocc’ package in R, which consolidates the API protocols for several
+different species occurrence API services into a single API syntax
+housed in one package. The ‘spocc’ package also interacts natively with
+the ‘taxis’ package to clean and standardize species names and common
+names across all taxa.
 
-```r
+### iNaturalist API
+
+This code is an example showing how to pull data for a single species
+from the GBIF database. This is a great way to get data for an
+individual species, but GBIF suggests you use their online tool, rather
+than their API, for downloading multiple species at one time. You can
+set up a for loop to automate a list of species, but that unnecessarily
+drives up maintenance costs for GBIF, and they will again point you back
+to the online tool.
+
+``` r
 (df <- occ(query = 'Sciurus carolinensis', from = 'gbif',  has_coords = TRUE))
 df2 <- occ2df(df)
 class(df2)
@@ -40,27 +68,49 @@ df3
 ```
 
 ### GBIF online download tool
-  Here I upload the file that I downloaded from gbif.org. To create this file, I used GBIF's online tool to draw a bounding box around Boulder county and specified that I wanted all data with (1) Geographic coordinates, (2) No known errors, (3) recorded in 2021, and (4) iNaturalist listed as their provider. The provide that data in the form of a CSV, which I added to a folder called "rawData" in the working directory. These data come as a dataframe of occurrence records, which each record taking a row and different variables taking the columns. The first thing I do is clean the names using the 'scrubr' package. Then I plot the raw data to make sure they meet my expectations. I'm checking  for anomalies that would be cause by improper loading,  like the wrong spatial extent or unexpectedly empty fields.
-  
 
-```r
+Here I upload the file that I downloaded from gbif.org. To create this
+file, I used GBIF’s online tool to draw a bounding box around Boulder
+county and specified that I wanted all data with (1) Geographic
+coordinates, (2) No known errors, (3) recorded in 2021, and (4)
+iNaturalist listed as their provider. The provide that data in the form
+of a CSV, which I added to a folder called “rawData” in the working
+directory. These data come as a dataframe of occurrence records, which
+each record taking a row and different variables taking the columns. The
+first thing I do is clean the names using the ‘scrubr’ package. Then I
+plot the raw data to make sure they meet my expectations. I’m checking
+for anomalies that would be cause by improper loading, like the wrong
+spatial extent or unexpectedly empty fields.
+
+``` r
 gbif <- fread("rawData/0289344-200613084148143.csv",header=TRUE)
 GBIF <- gbif %>% scrubr::fix_names( how = 'shortest')
 
 plot(gbif$decimalLatitude, gbif$decimalLongitude)
 ```
 
-![Plot of raw iNaturalist data](Earth_lab_sampler_files/figure-html/unnamed-chunk-3-1.png)
+![Plot of raw iNaturalist
+data](Earth_Lab_application_files/figure-gfm/unnamed-chunk-3-1.png)
 
-I did a quick automated data clean using the 'scrubr' package, but I wanted to go a few steps further to replace scientific names with common names when appropriate. Common names are common in some fields like Ornithology and Mammalogy, but they are uncommon in Botany and Microbiology. The corrections produced in this section reflect those customs and only favor common names for species where they're regularly provided in the iNaturalist dataset. I thinned the dataset to include only unique entries. This was largely about making this example smaller and easier to run quickly. There are repeated records from some notable individuals like birds of prey in public parks or notable  trees on people's walk to work. These individuals are recorded regularly and repeatedly and could be included in an  example less pressed from space. 
+I did a quick automated data clean using the ‘scrubr’ package, but I
+wanted to go a few steps further to replace scientific names with common
+names when appropriate. Common names are common in some fields like
+Ornithology and Mammalogy, but they are uncommon in Botany and
+Microbiology. The corrections produced in this section reflect those
+customs and only favor common names for species where they’re regularly
+provided in the iNaturalist dataset. I thinned the dataset to include
+only unique entries. This was largely about making this example smaller
+and easier to run quickly. There are repeated records from some notable
+individuals like birds of prey in public parks or notable trees on
+people’s walk to work. These individuals are recorded regularly and
+repeatedly and could be included in an example less pressed from space.
 
-```r
+``` r
 # Thin to unique
 a <- sci2comm(as.character(unique(GBIF$verbatimScientificName)))
 ```
 
-
-```r
+``` r
 # Make a list of matches between scientific names and common names
 common_names <- as.data.frame( unlist(a), byrow=TRUE, ncol=2)
 common_names <- cbind( rownames(common_names), common_names)
@@ -89,12 +139,23 @@ st_GBIF <- st_as_sf(SpatialPointsDataFrame(coords,GBIF_common_names ))
 plot(st_GBIF, pch=19, cex=0.25)
 ```
 
-![](Earth_lab_sampler_files/figure-html/unnamed-chunk-5-1.png)<!-- -->
+![](Earth_Lab_application_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
 
 ### Hexagon grid to aggregate data for standardized analysis
-  Sampling scheme is a critical component to any analysis. I sample the points above by laying a hexagonal grid over the occurrence points and aggregating those points into those hex bins for modeling. For a 2D spatial analysis like the one we're doing here, I prefer a hexagon lattice over a square lattice because it has a more symmetrical adjacency matrix. In a square lattice, the diagonals between cells are longer than the horizontal and vertical distances. In hexagonal grids, all adjacency distances are equal. This code creates the hex grid to be used below for sampling. The extent of this grid is set by the Boulder County bounding box and he resolution was set to be rather course to speed up computation time and keep this example light and fast.    
 
-```r
+Sampling scheme is a critical component to any analysis. I sample the
+points above by laying a hexagonal grid over the occurrence points and
+aggregating those points into those hex bins for modeling. For a 2D
+spatial analysis like the one we’re doing here, I prefer a hexagon
+lattice over a square lattice because it has a more symmetrical
+adjacency matrix. In a square lattice, the diagonals between cells are
+longer than the horizontal and vertical distances. In hexagonal grids,
+all adjacency distances are equal. This code creates the hex grid to be
+used below for sampling. The extent of this grid is set by the Boulder
+County bounding box and he resolution was set to be rather course to
+speed up computation time and keep this example light and fast.
+
+``` r
 # Define bounding box
  ext <- as(extent(getbb ("Boulder County Colorado")) , "SpatialPolygons")
 
@@ -114,20 +175,29 @@ plot(st_GBIF, pch=19, cex=0.25)
   plot(g, lwd=0.1)
 ```
 
-![Freshly constructed hexagonal sampling grid](Earth_lab_sampler_files/figure-html/unnamed-chunk-6-1.png)
+![Freshly constructed hexagonal sampling
+grid](Earth_Lab_application_files/figure-gfm/unnamed-chunk-6-1.png)
 
-```r
+``` r
 # Make the dataset more presentable
   hex_polys <- cbind(seq(1, length(g$geometry)), g)
   colnames(hex_polys) <- c("id_polygons", "geometry") # change colnames
 ```
+
 ### Aggregate iNaturalist data into hex bins
-  Now that we have iNaturalist data formatted as points and a hex grid built for sampling those points, it's time to bin those points into their appropriate hexagons. I do this using an intersect function that builds a dataframe by assigning each occurrence point to the hexagonal polygon that encompasses it's coordinates. I then group those data by their new polygon identifier and plot the hexagon grid with a fill color gradient representing the number of unique occurrence points in that polygon.    
-  
+
+Now that we have iNaturalist data formatted as points and a hex grid
+built for sampling those points, it’s time to bin those points into
+their appropriate hexagons. I do this using an intersect function that
+builds a dataframe by assigning each occurrence point to the hexagonal
+polygon that encompasses it’s coordinates. I then group those data by
+their new polygon identifier and plot the hexagon grid with a fill color
+gradient representing the number of unique occurrence points in that
+polygon.
+
 #### Inspect the points overlaying the grid.
 
-
-```r
+``` r
 st_crs(st_GBIF) <- crs(hex_polys)
 intersection <- st_intersection(x = hex_polys, y = st_GBIF)
 
@@ -138,13 +208,12 @@ plot(g, lwd=0.1)
 plot(int_result$geometry, pch=19, cex=0.25, col=adjustcolor("cornflowerblue", alpha.f = 0.2), add=TRUE)
 ```
 
-![Hexagon grid laid over a distribution of iNaturalist points](Earth_lab_sampler_files/figure-html/unnamed-chunk-7-1.png)
-
+![Hexagon grid laid over a distribution of iNaturalist
+points](Earth_Lab_application_files/figure-gfm/unnamed-chunk-7-1.png)
 
 #### Aggrigate points into hex bins
 
-
-```r
+``` r
 # Create storage device
 species_richness <- rep(0, max(hex_polys$id_polygons))
 hex_counts <- cbind(hex_polys, species_richness)
@@ -163,22 +232,39 @@ plot(hex_counts$geometry, lwd=0.001,
 plot(int_result$geometry, pch=19, cex=0.05, col=adjustcolor("cornflowerblue", alpha.f = 0.2), add=TRUE)
 ```
 
-![iNaturalist occurance points aggrigated into hex bins. The color of the bin represents the number of different species detected in that hexagon.](Earth_lab_sampler_files/figure-html/unnamed-chunk-8-1.png)
+![iNaturalist occurance points aggrigated into hex bins. The color of
+the bin represents the number of different species detected in that
+hexagon.](Earth_Lab_application_files/figure-gfm/unnamed-chunk-8-1.png)
 
-#### Plot species richness using a fancy color scheme that works well for color-blind people 
-  A count of the number of species in an area is called species richness. Species richness is a common proxy variable used to describe differences between ecosystems or health within a single ecosystem. It provides an incomplete description of an ecosystem, but species richness is still frequently used as a good indicator of ecosystem type and health because more complex ecosystems have more species and so, the number of species can often approximate complexity and complexity is a defining feature of ecosystems. 
+#### Plot species richness using a fancy color scheme that works well for color-blind people
 
+A count of the number of species in an area is called species richness.
+Species richness is a common proxy variable used to describe differences
+between ecosystems or health within a single ecosystem. It provides an
+incomplete description of an ecosystem, but species richness is still
+frequently used as a good indicator of ecosystem type and health because
+more complex ecosystems have more species and so, the number of species
+can often approximate complexity and complexity is a defining feature of
+ecosystems.
 
-```r
+``` r
 plot(hex_counts$geometry, lwd=0.001, 
      col=hcl.colors(max(hex_counts$species_richness)+2, palette = "viridis", alpha = NULL, rev = TRUE, fixup = TRUE)[hex_counts$species_richness+1])
 ```
 
-![Species richness of iNaturalist records in 2021](Earth_lab_sampler_files/figure-html/unnamed-chunk-9-1.png)
-### Adjacency matrix 
-  We need to include a list of neighbor relationships as a random co-variate in our model. Her we calculate that adjacency matrix using a function that takes a list of polygons and returns the adjacency matrix. I give this function the hexagon grid, which is built of hexagonal polygons with centroids, and the function calculates the adjacency relationships for all those centroids. 
+![Species richness of iNaturalist records in
+2021](Earth_Lab_application_files/figure-gfm/unnamed-chunk-9-1.png)
 
-```r
+### Adjacency matrix
+
+We need to include a list of neighbor relationships as a random
+co-variate in our model. Her we calculate that adjacency matrix using a
+function that takes a list of polygons and returns the adjacency matrix.
+I give this function the hexagon grid, which is built of hexagonal
+polygons with centroids, and the function calculates the adjacency
+relationships for all those centroids.
+
+``` r
 hex_adj <- poly2nb(as(hex_counts, "Spatial") )
 
 plot(hex_counts$geometry, lwd=0.001, 
@@ -186,16 +272,34 @@ plot(hex_counts$geometry, lwd=0.001,
 plot(hex_adj, coordinates(as(hex_counts, "Spatial")), col="darkblue", lwd=0.2, add=TRUE)
 ```
 
-![](Earth_lab_sampler_files/figure-html/unnamed-chunk-10-1.png)<!-- -->
+![](Earth_Lab_application_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
 
 ### Co-variates
-  Data don't produce themselves in a vacuum, they are created by a process and that process involves many parts. I am now going to organize some data to act as co-variates in a model predicting iNaturalist species richness. These variables should relate to hypotheses about mechanisms that created these data and they should be at the same spatial and temporal scale as other data in the analysis.
-  
+
+Data don’t produce themselves in a vacuum, they are created by a process
+and that process involves many parts. I am now going to organize some
+data to act as co-variates in a model predicting iNaturalist species
+richness. These variables should relate to hypotheses about mechanisms
+that created these data and they should be at the same spatial and
+temporal scale as other data in the analysis.
+
 #### Open Street Map data
-  On of my favorite datasets to use on a daily basis is Open Street Map. It is an amazing resource for a suite of different data about land use, amenities, administrative boundaries, points of interest, routing, and construction. The code below pulls polygons and multipolygons from the OSM API based on value/key pairs. I picked each value/key pair using the OSM tags wiki website, which catalogs all the available data in OSM. I search for different tags that described green space and I wrote a new API call for each value/key pair that I thought applicable. I concatenate those individual data requests into a single green space dataset. I then make three more individual calls to retrive data for buildings, roads, and agricultural fields. I think each of these may be contributing to our response variable so, I have left as individual dataframes so they can be treated individually in the modeling process.  
 
+On of my favorite datasets to use on a daily basis is Open Street Map.
+It is an amazing resource for a suite of different data about land use,
+amenities, administrative boundaries, points of interest, routing, and
+construction. The code below pulls polygons and multipolygons from the
+OSM API based on value/key pairs. I picked each value/key pair using the
+OSM tags wiki website, which catalogs all the available data in OSM. I
+search for different tags that described green space and I wrote a new
+API call for each value/key pair that I thought applicable. I
+concatenate those individual data requests into a single green space
+dataset. I then make three more individual calls to retrive data for
+buildings, roads, and agricultural fields. I think each of these may be
+contributing to our response variable so, I have left as individual
+dataframes so they can be treated individually in the modeling process.
 
-```r
+``` r
 name <- "Boulder County Colorado"
 
 try(my_bbox <- osmdata::getbb (name))
@@ -243,10 +347,9 @@ agriculture <- opq(bbox = my_bbox, timeout = 900) %>%
     osmdata_sf()
 ```
 
-
 #### Plot the green space data downloaded from OSM against the species richness data to make sure they overlap well.
 
-```r
+``` r
 plot(hex_counts$geometry, lwd=0.001, 
      col=hcl.colors(max(hex_counts$species_richness), palette = "viridis", alpha = 0, rev = TRUE, fixup = TRUE)[hex_counts$species_richness+1])
 plot(greens$osm_polygons[1], add=TRUE, lwd=0.01, col=adjustcolor("grey", alpha.f = 1))
@@ -256,12 +359,17 @@ plot(hex_counts$geometry, lwd=0.001,
      col=hcl.colors(max(hex_counts$species_richness)+2, palette = "viridis", alpha = 0.8, rev = TRUE, fixup = TRUE)[hex_counts$species_richness+1], add=TRUE)
 ```
 
-![](Earth_lab_sampler_files/figure-html/unnamed-chunk-12-1.png)<!-- -->
+![](Earth_Lab_application_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
 
 ### Aggregate covariates to hex bins using the same method as we did with species richness
-  Aggregating data to hexagon bins will be a required procedure for all covariates, which means we will need to repeat this procedure and it make sense to stop and make a function to keep our code clean. The first of these functions calculates polygon area for the greenspace polygons and adds that area calculation back into the dataset as a covariate. 
 
-```r
+Aggregating data to hexagon bins will be a required procedure for all
+covariates, which means we will need to repeat this procedure and it
+make sense to stop and make a function to keep our code clean. The first
+of these functions calculates polygon area for the greenspace polygons
+and adds that area calculation back into the dataset as a covariate.
+
+``` r
 covariate_hex_greens <- function(sf_object){
 
 if(length(sf_object$osm_multipolygons) > 0){
@@ -293,9 +401,16 @@ return(sf_area_points)
 }
 ```
 
-The second function does the same aggregation procedure as I did with species richness, which is to say that it counts then number of occurrences within a bin and assigns that bin a value for that count. The other function in this chunk is a clone of the counting function modified to report mean rather than count. The mean version of the function is valuable or the greenspace area data where reporting the mean area of greenspace if more informative than the count of parks in that bin. 
+The second function does the same aggregation procedure as I did with
+species richness, which is to say that it counts then number of
+occurrences within a bin and assigns that bin a value for that count.
+The other function in this chunk is a clone of the counting function
+modified to report mean rather than count. The mean version of the
+function is valuable or the greenspace area data where reporting the
+mean area of greenspace if more informative than the count of parks in
+that bin.
 
-```r
+``` r
 # Count the number of points in each bin
 point_to_hex_count <- function(hex_polys, points){
 intersection <- st_intersection(x = hex_polys, y = points)
@@ -331,9 +446,14 @@ return(hex_area)
 ```
 
 #### Run those functions on our green space data to produce a plot of green space area intensity
-  The plot below show the total area of greenspace per polygon. My hypothesis is that the presence of green space is a major predictor of iNaturalist data and want to compare this plot to the species richness plot to see it it looks like green spaces and iNaturalist records are generally located in the same places.
 
-```r
+The plot below show the total area of greenspace per polygon. My
+hypothesis is that the presence of green space is a major predictor of
+iNaturalist data and want to compare this plot to the species richness
+plot to see it it looks like green spaces and iNaturalist records are
+generally located in the same places.
+
+``` r
 green_pts <- covariate_hex_greens(greens)
 green_hex <- point_to_hex_mean(hex_polys, green_pts)
 hex <- green_hex
@@ -344,32 +464,35 @@ plot(hex$geometry, lwd=0.001,
 plot_variable(green_hex, green_hex$area)
 ```
 
-![](Earth_lab_sampler_files/figure-html/unnamed-chunk-15-1.png)<!-- -->
+![](Earth_Lab_application_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
 
-### Combine Species richness and covariates into the same dataframe for analysis. 
- In the previous code, I have created two spatial objects that are both hex grids with aggregated data assigned to each bin. To combine those sets, I first drop the geometry from one of the two because the geometries are identical and they will show up as duplicates in the combined dataset. After droping the geometry from one, I do a left join so they match polygonID values and then everything shares the single remaining geometry column.  
+### Combine Species richness and covariates into the same dataframe for analysis.
 
-```r
+In the previous code, I have created two spatial objects that are both
+hex grids with aggregated data assigned to each bin. To combine those
+sets, I first drop the geometry from one of the two because the
+geometries are identical and they will show up as duplicates in the
+combined dataset. After droping the geometry from one, I do a left join
+so they match polygonID values and then everything shares the single
+remaining geometry column.
+
+``` r
 hex_list <- st_drop_geometry(hex_counts) %>% inner_join(as.data.frame(green_hex), by="id_polygons") 
 colnames(hex_list) <- c("id_polygon", "species_richness", "park_size_average","geometry")
 head(hex_list)
 ```
 
-```
-##   id_polygon species_richness park_size_average                       geometry
-## 1          1                0                 0 POLYGON ((-105.6941 39.9195...
-## 2          2                0                 0 POLYGON ((-105.6841 39.9195...
-## 3          3                0                 0 POLYGON ((-105.6741 39.9195...
-## 4          4                0                 0 POLYGON ((-105.6641 39.9195...
-## 5          5                0                 0 POLYGON ((-105.6541 39.9195...
-## 6          6                0                 0 POLYGON ((-105.6441 39.9195...
-```
-
+    ##   id_polygon species_richness park_size_average                       geometry
+    ## 1          1                0                 0 POLYGON ((-105.6917 39.9254...
+    ## 2          2                0                 0 POLYGON ((-105.6817 39.9254...
+    ## 3          3                0                 0 POLYGON ((-105.6717 39.9254...
+    ## 4          4                0                 0 POLYGON ((-105.6617 39.9254...
+    ## 5          5                0                 0 POLYGON ((-105.6517 39.9254...
+    ## 6          6                0                 0 POLYGON ((-105.6417 39.9254...
 
 ### INLA Bayesian inference
 
-
-```r
+``` r
 hex_list$log_park_area <- log(hex_list$park_size_average)
 hex_list[which(is.infinite(hex_list$log_park_area) == TRUE),"log_park_area"] <- 0
 
@@ -383,50 +506,46 @@ m0.rw2d <- inla(species_richness ~ log_park_area +
 summary(m0.rw2d)
 ```
 
-```
-## 
-## Call:
-##    c("inla(formula = species_richness ~ log_park_area + f(id_polygon, ", " 
-##    model = \"rw2d\", nrow = 64, ncol = 41), family = \"poisson\", ", " 
-##    data = as.data.frame(hex_list), control.compute = list(dic = TRUE), ", 
-##    " control.predictor = list(compute = TRUE))") 
-## Time used:
-##     Pre = 3.63, Running = 17.7, Post = 0.373, Total = 21.7 
-## Fixed effects:
-##                 mean    sd 0.025quant 0.5quant 0.975quant   mode kld
-## (Intercept)   -6.828 0.873     -8.791   -6.729     -5.385 -6.514   0
-## log_park_area  0.120 0.056      0.010    0.120      0.230  0.120   0
-## 
-## Random effects:
-##   Name	  Model
-##     id_polygon Random walk 2D
-## 
-## Model hyperparameters:
-##                          mean    sd 0.025quant 0.5quant 0.975quant  mode
-## Precision for id_polygon 0.04 0.003      0.034    0.039      0.046 0.039
-## 
-## Expected number of effective parameters(stdev): 750.43(11.94)
-## Number of equivalent replicates : 3.41 
-## 
-## Deviance Information Criterion (DIC) ...............: 8053.13
-## Deviance Information Criterion (DIC, saturated) ....: 6426.52
-## Effective number of parameters .....................: 2928.09
-## 
-## Marginal log-Likelihood:  -5335.48 
-## Posterior marginals for the linear predictor and
-##  the fitted values are computed
-```
+    ## 
+    ## Call:
+    ##    c("inla(formula = species_richness ~ log_park_area + f(id_polygon, ", " 
+    ##    model = \"rw2d\", nrow = 64, ncol = 41), family = \"poisson\", ", " 
+    ##    data = as.data.frame(hex_list), control.compute = list(dic = TRUE), ", 
+    ##    " control.predictor = list(compute = TRUE))") 
+    ## Time used:
+    ##     Pre = 3.66, Running = 15.4, Post = 0.336, Total = 19.3 
+    ## Fixed effects:
+    ##                 mean    sd 0.025quant 0.5quant 0.975quant   mode kld
+    ## (Intercept)   -5.597 0.459     -6.581   -5.567     -4.781 -5.505   0
+    ## log_park_area  0.079 0.056     -0.031    0.079      0.188  0.079   0
+    ## 
+    ## Random effects:
+    ##   Name     Model
+    ##     id_polygon Random walk 2D
+    ## 
+    ## Model hyperparameters:
+    ##                           mean    sd 0.025quant 0.5quant 0.975quant  mode
+    ## Precision for id_polygon 0.043 0.003      0.037    0.043       0.05 0.043
+    ## 
+    ## Expected number of effective parameters(stdev): 736.71(12.33)
+    ## Number of equivalent replicates : 3.45 
+    ## 
+    ## Deviance Information Criterion (DIC) ...............: 6070.08
+    ## Deviance Information Criterion (DIC, saturated) ....: 4448.64
+    ## Effective number of parameters .....................: 1925.39
+    ## 
+    ## Marginal log-Likelihood:  -5312.47 
+    ## Posterior marginals for the linear predictor and
+    ##  the fitted values are computed
 
-```r
+``` r
 hex_list$RW2D <- m0.rw2d$summary.fitted.values[, "0.5quant"]
 hex_list$RW2Dsd <- m0.rw2d$summary.fitted.values[, "sd"]
 ```
 
+### Plot the mean predicted values from the model.
 
-
-### Plot the mean predicted values from the model. 
-
-```r
+``` r
 #plot_variable(hex_list, floor(hex_list$RW2D))
 
 model_predict <- as.integer(hex_list$RW2D)
@@ -438,33 +557,26 @@ plot(hex_counts$geometry, lwd=0.001,
      col=hcl.colors(max(hex_counts$species_richness)+2, palette = "viridis", alpha = NULL, rev = TRUE, fixup = FALSE)[hex_counts$species_richness+1])
 ```
 
-![](Earth_lab_sampler_files/figure-html/unnamed-chunk-18-1.png)<!-- -->
+![](Earth_Lab_application_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
 
-```r
+``` r
 plot(hex_list$geometry, lwd=0.001, 
      col=hcl.colors(max(hex_counts$species_richness)+2, palette = "viridis", alpha = NULL, rev = TRUE, fixup = FALSE)[model_predict+1])
 ```
 
-![](Earth_lab_sampler_files/figure-html/unnamed-chunk-18-2.png)<!-- -->
+![](Earth_Lab_application_files/figure-gfm/unnamed-chunk-18-2.png)<!-- -->
 
-```r
+``` r
 #plot(int_result$geometry, pch=19, cex=0.05, col=adjustcolor("cornflowerblue", alpha.f = 0.2), add=TRUE)
 ```
 
-
-
-
-```r
+``` r
 bei.trees2$RW2D <- m0.rw2d$summary.fitted.values[, "mean"]
 
 bei.trees2$MATERN2D <- m0.m2d$summary.fitted.values[, "mean"]
 ```
 
-
-
-```r
+``` r
 g_sf <- st_as_sf(g)
 HQ <- raster::extract(raster_this_HQ,  g_sf , fun = sum, na.rm = TRUE, df = TRUE, normalizeWeights=TRUE)  
 ```
-
-
