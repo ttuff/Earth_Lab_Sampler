@@ -26,6 +26,7 @@ library("osmdata")
 library("raster")
 library("osmdata")
 library("taxize")
+library("MCMCglmm")
 library("INLA")
 library("data.table")
 library("sp")
@@ -376,7 +377,7 @@ plot(hex_list$geometry, lwd=0.001,
 ```
 
 ### Is the fit good?
-  There are not P-values in INLA. Where an MCMC fit would use AIC values to compare different model fits, INLA uses a DIC or Deviance information criterion. In the figure below, we want our confidence intervals to NOT overlap zero. My predictor variable overlaps zero at the very lower tail of its distribution, but largely avoids it. This is a good indication that the species richness of iNaturalist records can be fairly accurately predicted by the area of green space and the adjacency of that green space to other green space. 
+  There are no P-values in INLA. Where an MCMC fit would use AIC values to compare different model fits, INLA uses a DIC or Deviance information criterion. In the figure below, we want our confidence intervals to NOT overlap zero. My predictor variable overlaps zero at the very lower tail of its distribution, but largely avoids it. This is a good indication that the species richness of iNaturalist records can be fairly accurately predicted by the area of green space and the adjacency of that green space to other green space. 
   
 ```{r, warning=FALSE, message=FALSE}
 Efxplot(list(m0.rw2d))

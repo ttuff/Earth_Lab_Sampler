@@ -1,0 +1,824 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={Ty Tuff's submitted code sample},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+
+\title{Ty Tuff's submitted code sample}
+\author{}
+\date{\vspace{-2.5em}}
+
+\begin{document}
+\maketitle
+
+\hypertarget{earth_lab_sampler}{%
+\section{Earth\_Lab\_Sampler}\label{earth_lab_sampler}}
+
+This is a work sample submitted by Ty Tuff as part of his application to
+become the next data scientist for CIRES Earth Lab.
+
+This icon links to a binder for this repository. MyBinder was unable to
+install gdal, which is an essential package for a number of other
+packages and functions in this script. Accordingly, this binder is not
+very useful because it can't successfully execute the code but it can
+show you what Rstudio looks like.
+\href{http://mybinder.org/v2/gh/ttuff/Earth_Lab_Sampler/main?urlpath=rstudio}{\includegraphics{https://mybinder.org/badge_logo.svg}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(}\StringTok{"rgdal"}\NormalTok{) }
+\KeywordTok{library}\NormalTok{(}\StringTok{"sf"}\NormalTok{)}
+\KeywordTok{library}\NormalTok{(}\StringTok{'tidyverse'}\NormalTok{)}
+\KeywordTok{library}\NormalTok{(}\StringTok{'spocc'}\NormalTok{)}
+\KeywordTok{library}\NormalTok{(}\StringTok{'mapr'}\NormalTok{)}
+\KeywordTok{library}\NormalTok{(}\StringTok{"scrubr"}\NormalTok{)}
+\KeywordTok{library}\NormalTok{(}\StringTok{"osmdata"}\NormalTok{)}
+\KeywordTok{library}\NormalTok{(}\StringTok{"raster"}\NormalTok{)}
+\KeywordTok{library}\NormalTok{(}\StringTok{"osmdata"}\NormalTok{)}
+\KeywordTok{library}\NormalTok{(}\StringTok{"taxize"}\NormalTok{)}
+\KeywordTok{library}\NormalTok{(}\StringTok{"INLA"}\NormalTok{)}
+\KeywordTok{library}\NormalTok{(}\StringTok{"data.table"}\NormalTok{)}
+\KeywordTok{library}\NormalTok{(}\StringTok{"sp"}\NormalTok{)}
+\KeywordTok{library}\NormalTok{(}\StringTok{"spdep"}\NormalTok{)}
+\KeywordTok{library}\NormalTok{(}\StringTok{"ggregplot"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{where-and-why-are-people-generating-inaturalist-data-in-boulder-county}{%
+\section{Where and Why are people generating iNaturalist data in Boulder
+County?}\label{where-and-why-are-people-generating-inaturalist-data-in-boulder-county}}
+
+iNaturalist is a mobile application that allows people to take photos of
+plants or animals they encounter in their environment and returns the
+identification of that species so people can learn more about those
+species. The user takes a photo of any species they encounter and upload
+that photo to the cloud, along with the metadata for the time and
+location when the photo was taken. Cloud computation services then use
+an AI classification algorithm to identify a list of candidate species
+matching the photo and location and return those result to the user for
+verification. The verified observation is then added to an iNaturalist
+databases that already includes over 68 Million individual occurrence
+records after only a few years of operation. These records are available
+through an iNaturalist API, but those records are also dumped into the
+GBIF database, where they undergo a small round of quality control that
+clean up the data in a few minor ways. I access these data using the
+`spocc' package in R, which consolidates the API protocols for several
+different species occurrence API services into a single API syntax
+housed in one package. The `spocc' package also interacts natively with
+the `taxis' package to clean and standardize species names and common
+names across all taxa.
+
+\hypertarget{inaturalist-api}{%
+\subsubsection{iNaturalist API}\label{inaturalist-api}}
+
+This code is an example showing how to pull data for a single species
+from the GBIF database. This is a great way to get data for an
+individual species, but GBIF suggests you use their online tool, rather
+than their API, for downloading multiple species at one time. You can
+set up a for loop to automate a list of species, but that unnecessarily
+drives up maintenance costs for GBIF, and they will again point you back
+to the online tool.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{(df <-}\StringTok{ }\KeywordTok{occ}\NormalTok{(}\DataTypeTok{query =} \StringTok{'Sciurus carolinensis'}\NormalTok{, }\DataTypeTok{from =} \StringTok{'gbif'}\NormalTok{,  }\DataTypeTok{has_coords =} \OtherTok{TRUE}\NormalTok{))}
+\NormalTok{df2 <-}\StringTok{ }\KeywordTok{occ2df}\NormalTok{(df)}
+\KeywordTok{class}\NormalTok{(df2)}
+\NormalTok{df3 <-}\StringTok{ }\KeywordTok{dframe}\NormalTok{(df2) }\OperatorTok{%>%}\StringTok{ }\NormalTok{scrubr}\OperatorTok{::}\KeywordTok{fix_names}\NormalTok{( }\DataTypeTok{how =} \StringTok{'shortest'}\NormalTok{)}
+
+\NormalTok{df3 <-}\StringTok{ }\NormalTok{df3[df3}\OperatorTok{$}\NormalTok{latitude }\OperatorTok{>}\StringTok{ }\DecValTok{45}  \OperatorTok{&}\StringTok{ }\NormalTok{df3}\OperatorTok{$}\NormalTok{longitude }\OperatorTok{>}\StringTok{ }\DecValTok{-74} \OperatorTok{&}\StringTok{ }\NormalTok{df3}\OperatorTok{$}\NormalTok{longitude }\OperatorTok{<}\StringTok{ }\DecValTok{-73}\NormalTok{ ,,drop=}\OtherTok{TRUE}\NormalTok{]}
+\NormalTok{df3}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{gbif-online-download-tool}{%
+\subsubsection{GBIF online download
+tool}\label{gbif-online-download-tool}}
+
+Here I upload the file that I downloaded from gbif.org. To create this
+file, I used GBIF's online tool to draw a bounding box around Boulder
+county and specified that I wanted all data with (1) Geographic
+coordinates, (2) No known errors, (3) recorded in 2021, and (4)
+iNaturalist listed as their provider. The provide that data in the form
+of a CSV, which I added to a folder called ``rawData'' in the working
+directory. These data come as a dataframe of occurrence records, which
+each record taking a row and different variables taking the columns. The
+first thing I do is clean the names using the `scrubr' package. Then I
+plot the raw data to make sure they meet my expectations. I'm checking
+for anomalies that would be cause by improper loading, like the wrong
+spatial extent or unexpectedly empty fields.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{gbif <-}\StringTok{ }\KeywordTok{fread}\NormalTok{(}\StringTok{"rawData/0289344-200613084148143.csv"}\NormalTok{,}\DataTypeTok{header=}\OtherTok{TRUE}\NormalTok{)}
+\NormalTok{GBIF <-}\StringTok{ }\NormalTok{gbif }\OperatorTok{%>%}\StringTok{ }\NormalTok{scrubr}\OperatorTok{::}\KeywordTok{fix_names}\NormalTok{( }\DataTypeTok{how =} \StringTok{'shortest'}\NormalTok{)}
+
+\KeywordTok{plot}\NormalTok{(gbif}\OperatorTok{$}\NormalTok{decimalLatitude, gbif}\OperatorTok{$}\NormalTok{decimalLongitude)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}
+\centering
+\includegraphics{Earth_Lab_application_files/figure-latex/unnamed-chunk-3-1.pdf}
+\caption{Plot of raw iNaturalist data}
+\end{figure}
+
+I did a quick automated data clean using the `scrubr' package, but I
+wanted to go a few steps further to replace scientific names with common
+names when appropriate. Common names are common in some fields like
+Ornithology and Mammalogy, but they are uncommon in Botany and
+Microbiology. The corrections produced in this section reflect those
+customs and only favor common names for species where they're regularly
+provided in the iNaturalist dataset. I thinned the dataset to include
+only unique entries. This was largely about making this example smaller
+and easier to run quickly. There are repeated records from some notable
+individuals like birds of prey in public parks or notable trees on
+people's walk to work. These individuals are recorded regularly and
+repeatedly and could be included in an example less pressed from space.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Thin to unique}
+\NormalTok{a <-}\StringTok{ }\KeywordTok{sci2comm}\NormalTok{(}\KeywordTok{as.character}\NormalTok{(}\KeywordTok{unique}\NormalTok{(GBIF}\OperatorTok{$}\NormalTok{verbatimScientificName)))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Make a list of matches between scientific names and common names}
+\NormalTok{common_names <-}\StringTok{ }\KeywordTok{as.data.frame}\NormalTok{( }\KeywordTok{unlist}\NormalTok{(a), }\DataTypeTok{byrow=}\OtherTok{TRUE}\NormalTok{, }\DataTypeTok{ncol=}\DecValTok{2}\NormalTok{)}
+\NormalTok{common_names <-}\StringTok{ }\KeywordTok{cbind}\NormalTok{( }\KeywordTok{rownames}\NormalTok{(common_names), common_names)}
+\KeywordTok{names}\NormalTok{(common_names) <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"verbatimScientificName"}\NormalTok{,}\StringTok{"common_names"}\NormalTok{)}
+\KeywordTok{write.csv}\NormalTok{(common_names, }\DataTypeTok{file=}\StringTok{"rawData/Common_names.csv"}\NormalTok{)}
+
+\CommentTok{# Join that list to the dataset}
+\NormalTok{Common_GBIF <-}\StringTok{ }\NormalTok{GBIF }\OperatorTok{%>%}\StringTok{ }\KeywordTok{left_join}\NormalTok{(common_names, }\DataTypeTok{by=}\StringTok{"verbatimScientificName"}\NormalTok{)}
+\NormalTok{Common_GBIF <-}\StringTok{ }\NormalTok{Common_GBIF[,}\KeywordTok{c}\NormalTok{(}\DecValTok{51}\NormalTok{,}\DecValTok{14}\NormalTok{, }\DecValTok{22}\NormalTok{,}\DecValTok{23}\NormalTok{ )] }
+\NormalTok{Common_GBIF[}\KeywordTok{which}\NormalTok{(}\KeywordTok{is.na}\NormalTok{(Common_GBIF}\OperatorTok{$}\NormalTok{common_names) }\OperatorTok{==}\StringTok{ }\OtherTok{TRUE}\NormalTok{),}\DecValTok{1}\NormalTok{] <-}\StringTok{ }\NormalTok{Common_GBIF[}\KeywordTok{which}\NormalTok{(}\KeywordTok{is.na}\NormalTok{(Common_GBIF}\OperatorTok{$}\NormalTok{common_names) }\OperatorTok{==}\StringTok{ }\OtherTok{TRUE}\NormalTok{),}\DecValTok{2}\NormalTok{]}
+
+\CommentTok{# Add coordinates}
+\NormalTok{coords =}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(}
+  \DataTypeTok{x=}\NormalTok{Common_GBIF}\OperatorTok{$}\NormalTok{decimalLongitude,}
+  \DataTypeTok{y=}\NormalTok{Common_GBIF}\OperatorTok{$}\NormalTok{decimalLatitude}
+\NormalTok{)}
+
+\CommentTok{# reformat for spatial analysis}
+\NormalTok{GBIF_common_names <-}\StringTok{ }\KeywordTok{as.data.frame}\NormalTok{(Common_GBIF}\OperatorTok{$}\NormalTok{common_names)}
+\KeywordTok{names}\NormalTok{(GBIF_common_names) <-}\StringTok{ "Common_names"}
+
+\NormalTok{sp_GBIF <-}\StringTok{ }\KeywordTok{SpatialPointsDataFrame}\NormalTok{(coords,GBIF_common_names )}
+\NormalTok{st_GBIF <-}\StringTok{ }\KeywordTok{st_as_sf}\NormalTok{(}\KeywordTok{SpatialPointsDataFrame}\NormalTok{(coords,GBIF_common_names ))}
+
+\CommentTok{# Plot to check that everything worked}
+\KeywordTok{plot}\NormalTok{(st_GBIF, }\DataTypeTok{pch=}\DecValTok{19}\NormalTok{, }\DataTypeTok{cex=}\FloatTok{0.25}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Earth_Lab_application_files/figure-latex/unnamed-chunk-5-1.pdf}
+
+\hypertarget{hexagon-grid-to-aggregate-data-for-standardized-analysis}{%
+\subsubsection{Hexagon grid to aggregate data for standardized
+analysis}\label{hexagon-grid-to-aggregate-data-for-standardized-analysis}}
+
+Sampling scheme is a critical component to any analysis. I sample the
+points above by laying a hexagonal grid over the occurrence points and
+aggregating those points into those hex bins for modeling. For a 2D
+spatial analysis like the one we're doing here, I prefer a hexagon
+lattice over a square lattice because it has a more symmetrical
+adjacency matrix. In a square lattice, the diagonals between cells are
+longer than the horizontal and vertical distances. In hexagonal grids,
+all adjacency distances are equal. This code creates the hex grid to be
+used below for sampling. The extent of this grid is set by the Boulder
+County bounding box and he resolution was set to be rather course to
+speed up computation time and keep this example light and fast.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Define bounding box}
+\NormalTok{ ext <-}\StringTok{ }\KeywordTok{as}\NormalTok{(}\KeywordTok{extent}\NormalTok{(}\KeywordTok{getbb}\NormalTok{ (}\StringTok{"Boulder County Colorado"}\NormalTok{)) , }\StringTok{"SpatialPolygons"}\NormalTok{)}
+
+\CommentTok{# Set spatial projection}
+  \KeywordTok{crs}\NormalTok{(ext) <-}\StringTok{ "EPSG:4326"}
+  
+\CommentTok{# Use spsample to measure out a grid of center points within the bounding box  }
+\NormalTok{  h <-}\StringTok{ }\KeywordTok{spsample}\NormalTok{(ext, }\DataTypeTok{type =} \StringTok{"hexagonal"}\NormalTok{, }\DataTypeTok{cellsize =} \FloatTok{0.01}\NormalTok{)}
+    
+\CommentTok{# convert center points to hexagons}
+\NormalTok{  g <-}\StringTok{ }\KeywordTok{HexPoints2SpatialPolygons}\NormalTok{(h, }\DataTypeTok{dx =} \FloatTok{0.01}\NormalTok{)}
+  
+\CommentTok{# Reformat for easy plotting}
+\NormalTok{  g <-}\StringTok{ }\KeywordTok{st_as_sf}\NormalTok{(g)}
+ 
+\CommentTok{# Plot to check that it's built corrrectly  }
+  \KeywordTok{plot}\NormalTok{(g, }\DataTypeTok{lwd=}\FloatTok{0.1}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}
+\centering
+\includegraphics{Earth_Lab_application_files/figure-latex/unnamed-chunk-6-1.pdf}
+\caption{Freshly constructed hexagonal sampling grid}
+\end{figure}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Make the dataset more presentable}
+\NormalTok{  hex_polys <-}\StringTok{ }\KeywordTok{cbind}\NormalTok{(}\KeywordTok{seq}\NormalTok{(}\DecValTok{1}\NormalTok{, }\KeywordTok{length}\NormalTok{(g}\OperatorTok{$}\NormalTok{geometry)), g)}
+  \KeywordTok{colnames}\NormalTok{(hex_polys) <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"id_polygons"}\NormalTok{, }\StringTok{"geometry"}\NormalTok{) }\CommentTok{# change colnames}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{aggregate-inaturalist-data-into-hex-bins}{%
+\subsubsection{Aggregate iNaturalist data into hex
+bins}\label{aggregate-inaturalist-data-into-hex-bins}}
+
+Now that we have iNaturalist data formatted as points and a hex grid
+built for sampling those points, it's time to bin those points into
+their appropriate hexagons. I do this using an intersect function that
+builds a dataframe by assigning each occurrence point to the hexagonal
+polygon that encompasses it's coordinates. I then group those data by
+their new polygon identifier and plot the hexagon grid with a fill color
+gradient representing the number of unique occurrence points in that
+polygon.
+
+\hypertarget{inspect-the-points-overlaying-the-grid.}{%
+\paragraph{Inspect the points overlaying the
+grid.}\label{inspect-the-points-overlaying-the-grid.}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{st_crs}\NormalTok{(st_GBIF) <-}\StringTok{ }\KeywordTok{crs}\NormalTok{(hex_polys)}
+\NormalTok{intersection <-}\StringTok{ }\KeywordTok{st_intersection}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ hex_polys, }\DataTypeTok{y =}\NormalTok{ st_GBIF)}
+
+\NormalTok{int_result <-}\StringTok{ }\NormalTok{intersection }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{group_by}\NormalTok{(id_polygons) }
+
+\KeywordTok{plot}\NormalTok{(g, }\DataTypeTok{lwd=}\FloatTok{0.1}\NormalTok{)}
+\KeywordTok{plot}\NormalTok{(int_result}\OperatorTok{$}\NormalTok{geometry, }\DataTypeTok{pch=}\DecValTok{19}\NormalTok{, }\DataTypeTok{cex=}\FloatTok{0.25}\NormalTok{, }\DataTypeTok{col=}\KeywordTok{adjustcolor}\NormalTok{(}\StringTok{"cornflowerblue"}\NormalTok{, }\DataTypeTok{alpha.f =} \FloatTok{0.2}\NormalTok{), }\DataTypeTok{add=}\OtherTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}
+\centering
+\includegraphics{Earth_Lab_application_files/figure-latex/unnamed-chunk-7-1.pdf}
+\caption{Hexagon grid laid over a distribution of iNaturalist points}
+\end{figure}
+
+\hypertarget{aggrigate-points-into-hex-bins}{%
+\paragraph{Aggrigate points into hex
+bins}\label{aggrigate-points-into-hex-bins}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Create storage device}
+\NormalTok{species_richness <-}\StringTok{ }\KeywordTok{rep}\NormalTok{(}\DecValTok{0}\NormalTok{, }\KeywordTok{max}\NormalTok{(hex_polys}\OperatorTok{$}\NormalTok{id_polygons))}
+\NormalTok{hex_counts <-}\StringTok{ }\KeywordTok{cbind}\NormalTok{(hex_polys, species_richness)}
+
+\CommentTok{# Count points per hexagon}
+\NormalTok{int_count <-}\StringTok{ }\NormalTok{intersection }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{group_by}\NormalTok{(id_polygons, }\DataTypeTok{.drop =} \OtherTok{FALSE}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{count}\NormalTok{()}
+
+\CommentTok{# Add counts to storage device}
+\NormalTok{hex_counts}\OperatorTok{$}\NormalTok{species_richness[int_count}\OperatorTok{$}\NormalTok{id_polygons] <-}\StringTok{ }\NormalTok{int_count}\OperatorTok{$}\NormalTok{n}
+
+\CommentTok{# Plot}
+\KeywordTok{plot}\NormalTok{(hex_counts}\OperatorTok{$}\NormalTok{geometry, }\DataTypeTok{lwd=}\FloatTok{0.001}\NormalTok{, }
+     \DataTypeTok{col=}\KeywordTok{grey.colors}\NormalTok{(}\KeywordTok{max}\NormalTok{(hex_counts}\OperatorTok{$}\NormalTok{species_richness), }\DataTypeTok{rev =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{start=}\DecValTok{0}\NormalTok{, }\DataTypeTok{end=}\DecValTok{1}\NormalTok{)[hex_counts}\OperatorTok{$}\NormalTok{species_richness}\OperatorTok{+}\DecValTok{1}\NormalTok{])}
+\KeywordTok{plot}\NormalTok{(int_result}\OperatorTok{$}\NormalTok{geometry, }\DataTypeTok{pch=}\DecValTok{19}\NormalTok{, }\DataTypeTok{cex=}\FloatTok{0.05}\NormalTok{, }\DataTypeTok{col=}\KeywordTok{adjustcolor}\NormalTok{(}\StringTok{"cornflowerblue"}\NormalTok{, }\DataTypeTok{alpha.f =} \FloatTok{0.2}\NormalTok{), }\DataTypeTok{add=}\OtherTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}
+\centering
+\includegraphics{Earth_Lab_application_files/figure-latex/unnamed-chunk-8-1.pdf}
+\caption{iNaturalist occurance points aggrigated into hex bins. The
+color of the bin represents the number of different species detected in
+that hexagon.}
+\end{figure}
+
+\hypertarget{plot-species-richness-using-a-fancy-color-scheme-that-works-well-for-color-blind-people}{%
+\paragraph{Plot species richness using a fancy color scheme that works
+well for color-blind
+people}\label{plot-species-richness-using-a-fancy-color-scheme-that-works-well-for-color-blind-people}}
+
+A count of the number of species in an area is called species richness.
+Species richness is a common proxy variable used to describe differences
+between ecosystems or health within a single ecosystem. It provides an
+incomplete description of an ecosystem, but species richness is still
+frequently used as a good indicator of ecosystem type and health because
+more complex ecosystems have more species and so, the number of species
+can often approximate complexity and complexity is a defining feature of
+ecosystems.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{plot}\NormalTok{(hex_counts}\OperatorTok{$}\NormalTok{geometry, }\DataTypeTok{lwd=}\FloatTok{0.001}\NormalTok{, }
+     \DataTypeTok{col=}\KeywordTok{hcl.colors}\NormalTok{(}\KeywordTok{max}\NormalTok{(hex_counts}\OperatorTok{$}\NormalTok{species_richness)}\OperatorTok{+}\DecValTok{2}\NormalTok{, }\DataTypeTok{palette =} \StringTok{"viridis"}\NormalTok{, }\DataTypeTok{alpha =} \OtherTok{NULL}\NormalTok{, }\DataTypeTok{rev =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{fixup =} \OtherTok{TRUE}\NormalTok{)[hex_counts}\OperatorTok{$}\NormalTok{species_richness}\OperatorTok{+}\DecValTok{1}\NormalTok{])}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}
+\centering
+\includegraphics{Earth_Lab_application_files/figure-latex/unnamed-chunk-9-1.pdf}
+\caption{Species richness of iNaturalist records in 2021}
+\end{figure}
+
+\hypertarget{adjacency-matrix}{%
+\subsubsection{Adjacency matrix}\label{adjacency-matrix}}
+
+We need to include a list of neighbor relationships as a random
+co-variate in our model. Her we calculate that adjacency matrix using a
+function that takes a list of polygons and returns the adjacency matrix.
+I give this function the hexagon grid, which is built of hexagonal
+polygons with centroids, and the function calculates the adjacency
+relationships for all those centroids.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{hex_adj <-}\StringTok{ }\KeywordTok{poly2nb}\NormalTok{(}\KeywordTok{as}\NormalTok{(hex_counts, }\StringTok{"Spatial"}\NormalTok{) )}
+
+\KeywordTok{plot}\NormalTok{(hex_counts}\OperatorTok{$}\NormalTok{geometry, }\DataTypeTok{lwd=}\FloatTok{0.001}\NormalTok{, }
+     \DataTypeTok{col=}\KeywordTok{hcl.colors}\NormalTok{(}\KeywordTok{max}\NormalTok{(hex_counts}\OperatorTok{$}\NormalTok{species_richness)}\OperatorTok{+}\DecValTok{2}\NormalTok{, }\DataTypeTok{palette =} \StringTok{"viridis"}\NormalTok{, }\DataTypeTok{alpha =} \OtherTok{NULL}\NormalTok{, }\DataTypeTok{rev =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{fixup =} \OtherTok{TRUE}\NormalTok{)[hex_counts}\OperatorTok{$}\NormalTok{species_richness}\OperatorTok{+}\DecValTok{1}\NormalTok{])}
+\KeywordTok{plot}\NormalTok{(hex_adj, }\KeywordTok{coordinates}\NormalTok{(}\KeywordTok{as}\NormalTok{(hex_counts, }\StringTok{"Spatial"}\NormalTok{)), }\DataTypeTok{col=}\StringTok{"darkblue"}\NormalTok{, }\DataTypeTok{lwd=}\FloatTok{0.2}\NormalTok{, }\DataTypeTok{add=}\OtherTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Earth_Lab_application_files/figure-latex/unnamed-chunk-10-1.pdf}
+
+\hypertarget{co-variates}{%
+\subsubsection{Co-variates}\label{co-variates}}
+
+Data don't produce themselves in a vacuum, they are created by a process
+and that process involves many parts. I am now going to organize some
+data to act as co-variates in a model predicting iNaturalist species
+richness. These variables should relate to hypotheses about mechanisms
+that created these data and they should be at the same spatial and
+temporal scale as other data in the analysis.
+
+\hypertarget{open-street-map-data}{%
+\paragraph{Open Street Map data}\label{open-street-map-data}}
+
+On of my favorite datasets to use on a daily basis is Open Street Map.
+It is an amazing resource for a suite of different data about land use,
+amenities, administrative boundaries, points of interest, routing, and
+construction. The code below pulls polygons and multipolygons from the
+OSM API based on value/key pairs. I picked each value/key pair using the
+OSM tags wiki website, which catalogs all the available data in OSM. I
+search for different tags that described green space and I wrote a new
+API call for each value/key pair that I thought applicable. I
+concatenate those individual data requests into a single green space
+dataset. I then make three more individual calls to retrive data for
+buildings, roads, and agricultural fields. I think each of these may be
+contributing to our response variable so, I have left as individual
+dataframes so they can be treated individually in the modeling process.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{name <-}\StringTok{ "Boulder County Colorado"}
+
+\KeywordTok{try}\NormalTok{(my_bbox <-}\StringTok{ }\NormalTok{osmdata}\OperatorTok{::}\KeywordTok{getbb}\NormalTok{ (name))}
+
+\NormalTok{my_bbox[}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{] <-}\StringTok{ }\NormalTok{my_bbox[}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{] }\OperatorTok{+}\StringTok{ }\FloatTok{0.02}
+
+
+\NormalTok{dat1 <-}\StringTok{ }\KeywordTok{opq}\NormalTok{(}\DataTypeTok{bbox =}\NormalTok{ my_bbox, }\DataTypeTok{timeout =} \DecValTok{900}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{add_osm_feature}\NormalTok{(}\DataTypeTok{key =} \StringTok{'leisure'}\NormalTok{, }\DataTypeTok{value =} \StringTok{'park'}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{osmdata_sf}\NormalTok{ ()}
+\NormalTok{dat2 <-}\StringTok{ }\KeywordTok{opq}\NormalTok{(}\DataTypeTok{bbox =}\NormalTok{ my_bbox, }\DataTypeTok{timeout =} \DecValTok{900}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{add_osm_feature}\NormalTok{(}\DataTypeTok{key =} \StringTok{'leisure'}\NormalTok{, }\DataTypeTok{value =} \StringTok{'garden'}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{osmdata_sf}\NormalTok{ ()}
+\NormalTok{dat3 <-}\StringTok{ }\KeywordTok{opq}\NormalTok{(}\DataTypeTok{bbox =}\NormalTok{ my_bbox, }\DataTypeTok{timeout =} \DecValTok{900}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{add_osm_feature}\NormalTok{(}\DataTypeTok{key =} \StringTok{'leisure'}\NormalTok{, }\DataTypeTok{value =} \StringTok{'nature_reserve'}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{osmdata_sf}\NormalTok{ ()}
+\NormalTok{dat4 <-}\StringTok{ }\KeywordTok{opq}\NormalTok{(}\DataTypeTok{bbox =}\NormalTok{ my_bbox, }\DataTypeTok{timeout =} \DecValTok{900}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{add_osm_feature}\NormalTok{(}\DataTypeTok{key =} \StringTok{'leisure'}\NormalTok{, }\DataTypeTok{value =} \StringTok{'dog_park'}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{osmdata_sf}\NormalTok{ ()}
+\NormalTok{dat5 <-}\StringTok{ }\KeywordTok{opq}\NormalTok{(}\DataTypeTok{bbox =}\NormalTok{ my_bbox, }\DataTypeTok{timeout =} \DecValTok{900}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{add_osm_feature}\NormalTok{(}\DataTypeTok{key =} \StringTok{'leisure'}\NormalTok{, }\DataTypeTok{value =} \StringTok{'common'}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{osmdata_sf}\NormalTok{ ()}
+\NormalTok{dat6 <-}\StringTok{ }\KeywordTok{opq}\NormalTok{(}\DataTypeTok{bbox =}\NormalTok{ my_bbox, }\DataTypeTok{timeout =} \DecValTok{900}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{add_osm_feature}\NormalTok{(}\DataTypeTok{key =} \StringTok{'leisure'}\NormalTok{, }\DataTypeTok{value =} \StringTok{'pitch'}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{osmdata_sf}\NormalTok{ ()}
+\NormalTok{dat7 <-}\StringTok{ }\KeywordTok{opq}\NormalTok{(}\DataTypeTok{bbox =}\NormalTok{ my_bbox, }\DataTypeTok{timeout =} \DecValTok{900}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{add_osm_feature}\NormalTok{(}\DataTypeTok{key =} \StringTok{'leisure'}\NormalTok{, }\DataTypeTok{value =} \StringTok{'horse_riding'}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{osmdata_sf}\NormalTok{ ()}
+\NormalTok{dat8 <-}\StringTok{ }\KeywordTok{opq}\NormalTok{(}\DataTypeTok{bbox =}\NormalTok{ my_bbox, }\DataTypeTok{timeout =} \DecValTok{900}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{add_osm_feature}\NormalTok{(}\DataTypeTok{key =} \StringTok{'natural'}\NormalTok{, }\DataTypeTok{value =} \StringTok{'wood'}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{osmdata_sf}\NormalTok{ ()}
+\NormalTok{greens <-}\StringTok{ }\KeywordTok{c}\NormalTok{ (dat1, dat2, dat3, dat4, dat5, dat6, dat7, dat8)}
+
+
+\NormalTok{buildings <-}\StringTok{ }\KeywordTok{opq}\NormalTok{(}\DataTypeTok{bbox =}\NormalTok{ my_bbox, }\DataTypeTok{timeout =} \DecValTok{900}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{add_osm_feature}\NormalTok{(}\DataTypeTok{key =} \StringTok{'building'}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{osmdata_sf}\NormalTok{ ()}
+
+\NormalTok{roads <-}\StringTok{ }\KeywordTok{opq}\NormalTok{(}\DataTypeTok{bbox =}\NormalTok{ my_bbox, }\DataTypeTok{timeout =} \DecValTok{900}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{add_osm_feature}\NormalTok{(}\DataTypeTok{key =} \StringTok{'landuse'}\NormalTok{, }\DataTypeTok{value =} \StringTok{'residential'}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{osmdata_sf}\NormalTok{ ()}
+
+\NormalTok{agriculture <-}\StringTok{ }\KeywordTok{opq}\NormalTok{(}\DataTypeTok{bbox =}\NormalTok{ my_bbox, }\DataTypeTok{timeout =} \DecValTok{900}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{add_osm_feature}\NormalTok{(}\DataTypeTok{key =} \StringTok{'landuse'}\NormalTok{, }\DataTypeTok{value =} \StringTok{'farmland'}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{osmdata_sf}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{plot-the-green-space-data-downloaded-from-osm-against-the-species-richness-data-to-make-sure-they-overlap-well.}{%
+\paragraph{Plot the green space data downloaded from OSM against the
+species richness data to make sure they overlap
+well.}\label{plot-the-green-space-data-downloaded-from-osm-against-the-species-richness-data-to-make-sure-they-overlap-well.}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{plot}\NormalTok{(hex_counts}\OperatorTok{$}\NormalTok{geometry, }\DataTypeTok{lwd=}\FloatTok{0.001}\NormalTok{, }
+     \DataTypeTok{col=}\KeywordTok{hcl.colors}\NormalTok{(}\KeywordTok{max}\NormalTok{(hex_counts}\OperatorTok{$}\NormalTok{species_richness), }\DataTypeTok{palette =} \StringTok{"viridis"}\NormalTok{, }\DataTypeTok{alpha =} \DecValTok{0}\NormalTok{, }\DataTypeTok{rev =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{fixup =} \OtherTok{TRUE}\NormalTok{)[hex_counts}\OperatorTok{$}\NormalTok{species_richness}\OperatorTok{+}\DecValTok{1}\NormalTok{])}
+\KeywordTok{plot}\NormalTok{(greens}\OperatorTok{$}\NormalTok{osm_polygons[}\DecValTok{1}\NormalTok{], }\DataTypeTok{add=}\OtherTok{TRUE}\NormalTok{, }\DataTypeTok{lwd=}\FloatTok{0.01}\NormalTok{, }\DataTypeTok{col=}\KeywordTok{adjustcolor}\NormalTok{(}\StringTok{"grey"}\NormalTok{, }\DataTypeTok{alpha.f =} \DecValTok{1}\NormalTok{))}
+\KeywordTok{plot}\NormalTok{(greens}\OperatorTok{$}\NormalTok{osm_multipolygons[}\DecValTok{1}\NormalTok{], }\DataTypeTok{add=}\OtherTok{TRUE}\NormalTok{, }\DataTypeTok{lwd=}\FloatTok{0.01}\NormalTok{, }\DataTypeTok{col=}\KeywordTok{adjustcolor}\NormalTok{(}\StringTok{"grey"}\NormalTok{, }\DataTypeTok{alpha.f =} \DecValTok{1}\NormalTok{))}
+\CommentTok{#plot(buildings$osm_polygons[1], add=TRUE, lwd=0.01, col=adjustcolor("black", alpha.f = 1))}
+\KeywordTok{plot}\NormalTok{(hex_counts}\OperatorTok{$}\NormalTok{geometry, }\DataTypeTok{lwd=}\FloatTok{0.001}\NormalTok{, }
+     \DataTypeTok{col=}\KeywordTok{hcl.colors}\NormalTok{(}\KeywordTok{max}\NormalTok{(hex_counts}\OperatorTok{$}\NormalTok{species_richness)}\OperatorTok{+}\DecValTok{2}\NormalTok{, }\DataTypeTok{palette =} \StringTok{"viridis"}\NormalTok{, }\DataTypeTok{alpha =} \FloatTok{0.8}\NormalTok{, }\DataTypeTok{rev =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{fixup =} \OtherTok{TRUE}\NormalTok{)[hex_counts}\OperatorTok{$}\NormalTok{species_richness}\OperatorTok{+}\DecValTok{1}\NormalTok{], }\DataTypeTok{add=}\OtherTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Earth_Lab_application_files/figure-latex/unnamed-chunk-12-1.pdf}
+
+\hypertarget{aggregate-covariates-to-hex-bins-using-the-same-method-as-we-did-with-species-richness}{%
+\subsubsection{Aggregate covariates to hex bins using the same method as
+we did with species
+richness}\label{aggregate-covariates-to-hex-bins-using-the-same-method-as-we-did-with-species-richness}}
+
+Aggregating data to hexagon bins will be a required procedure for all
+covariates, which means we will need to repeat this procedure and it
+make sense to stop and make a function to keep our code clean. The first
+of these functions calculates polygon area for the greenspace polygons
+and adds that area calculation back into the dataset as a covariate.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{covariate_hex_greens <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(sf_object)\{}
+
+\ControlFlowTok{if}\NormalTok{(}\KeywordTok{length}\NormalTok{(sf_object}\OperatorTok{$}\NormalTok{osm_multipolygons) }\OperatorTok{>}\StringTok{ }\DecValTok{0}\NormalTok{)\{}
+\NormalTok{  poly_area <-}\StringTok{ }\KeywordTok{st_area}\NormalTok{(sf_object}\OperatorTok{$}\NormalTok{osm_polygons)}
+\NormalTok{multi_poly_area <-}\StringTok{ }\KeywordTok{st_area}\NormalTok{(sf_object}\OperatorTok{$}\NormalTok{osm_multipolygons)}
+\NormalTok{log_area1 <-}\StringTok{ }\KeywordTok{as.data.frame}\NormalTok{(}\KeywordTok{as.numeric}\NormalTok{(}\KeywordTok{log}\NormalTok{(poly_area)))}
+\NormalTok{log_area2 <-}\StringTok{ }\KeywordTok{as.data.frame}\NormalTok{(}\KeywordTok{as.numeric}\NormalTok{(}\KeywordTok{log}\NormalTok{(multi_poly_area)))}
+\KeywordTok{names}\NormalTok{(log_area1) <-}\StringTok{ "log_area"}
+\KeywordTok{names}\NormalTok{(log_area2) <-}\StringTok{ "log_area"}
+\NormalTok{log_area <-}\StringTok{ }\KeywordTok{rbind}\NormalTok{(log_area1, log_area2) }
+
+\NormalTok{coords <-}\StringTok{ }\KeywordTok{rbind}\NormalTok{(sf_object}\OperatorTok{$}\NormalTok{osm_polygons }\OperatorTok{%>%}\StringTok{ }\KeywordTok{st_centroid}\NormalTok{() }\OperatorTok{%>%}\StringTok{ }\KeywordTok{st_coordinates}\NormalTok{(), }
+\NormalTok{                sf_object}\OperatorTok{$}\NormalTok{osm_multipolygons }\OperatorTok{%>%}\StringTok{ }\KeywordTok{st_centroid}\NormalTok{() }\OperatorTok{%>%}\StringTok{ }\KeywordTok{st_coordinates}\NormalTok{())}
+\NormalTok{\} }\ControlFlowTok{else}\NormalTok{ \{}
+\NormalTok{  poly_area <-}\StringTok{ }\KeywordTok{st_area}\NormalTok{(sf_object}\OperatorTok{$}\NormalTok{osm_polygons)}
+\NormalTok{log_area <-}\StringTok{ }\KeywordTok{as.data.frame}\NormalTok{(}\KeywordTok{as.numeric}\NormalTok{(}\KeywordTok{log}\NormalTok{(poly_area)))}
+\KeywordTok{names}\NormalTok{(log_area) <-}\StringTok{ "log_area"}
+
+\NormalTok{coords <-}\StringTok{ }\NormalTok{sf_object}\OperatorTok{$}\NormalTok{osm_polygons }\OperatorTok{%>%}\StringTok{ }\KeywordTok{st_centroid}\NormalTok{() }\OperatorTok{%>%}\StringTok{ }\KeywordTok{st_coordinates}\NormalTok{()}
+\NormalTok{\}}
+
+\ControlFlowTok{if}\NormalTok{(}\KeywordTok{length}\NormalTok{(coords[,}\DecValTok{1}\NormalTok{]) }\OperatorTok{!=}\StringTok{ }\KeywordTok{length}\NormalTok{(log_area[,}\DecValTok{1}\NormalTok{])) }\KeywordTok{stop}\NormalTok{(}\StringTok{"wrong length"}\NormalTok{)}
+\NormalTok{area_points <-}\StringTok{ }\KeywordTok{cbind}\NormalTok{(log_area, coords)}
+\KeywordTok{colnames}\NormalTok{(area_points)[}\DecValTok{2}\OperatorTok{:}\DecValTok{3}\NormalTok{] <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"longitude"}\NormalTok{, }\StringTok{"latitude"}\NormalTok{)}
+\NormalTok{sf_area_points <-}\StringTok{ }\KeywordTok{st_as_sf}\NormalTok{(area_points, }\DataTypeTok{coords =} \KeywordTok{c}\NormalTok{(}\StringTok{"longitude"}\NormalTok{, }\StringTok{"latitude"}\NormalTok{), }
+    \DataTypeTok{crs =} \DecValTok{4326}\NormalTok{, }\DataTypeTok{agr =} \StringTok{"constant"}\NormalTok{)}
+
+\KeywordTok{return}\NormalTok{(sf_area_points)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+The second function does the same aggregation procedure as I did with
+species richness, which is to say that it counts then number of
+occurrences within a bin and assigns that bin a value for that count.
+The other function in this chunk is a clone of the counting function
+modified to report mean rather than count. The mean version of the
+function is valuable or the greenspace area data where reporting the
+mean area of greenspace if more informative than the count of parks in
+that bin.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Count the number of points in each bin}
+\NormalTok{point_to_hex_count <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(hex_polys, points)\{}
+\NormalTok{intersection <-}\StringTok{ }\KeywordTok{st_intersection}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ hex_polys, }\DataTypeTok{y =}\NormalTok{ points)}
+
+\NormalTok{counter <-}\StringTok{ }\KeywordTok{rep}\NormalTok{(}\DecValTok{0}\NormalTok{, }\KeywordTok{max}\NormalTok{(hex_polys}\OperatorTok{$}\NormalTok{id_polygons))}
+\NormalTok{hex_count <-}\StringTok{ }\KeywordTok{cbind}\NormalTok{(hex_polys, counter)}
+
+\NormalTok{counted <-}\StringTok{ }\NormalTok{intersection }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{group_by}\NormalTok{(id_polygons, }\DataTypeTok{.drop =} \OtherTok{FALSE}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{count}\NormalTok{()}
+
+\NormalTok{hex_count}\OperatorTok{$}\NormalTok{area[counted}\OperatorTok{$}\NormalTok{id_polygons] <-}\StringTok{ }\NormalTok{counted}\OperatorTok{$}\NormalTok{n}
+
+\KeywordTok{return}\NormalTok{(hex_count)}
+\NormalTok{\}}
+
+
+\CommentTok{# Report the mean value for each bin}
+\NormalTok{point_to_hex_mean <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(hex_polys, points)\{}
+\NormalTok{intersection <-}\StringTok{ }\KeywordTok{st_intersection}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ hex_polys, }\DataTypeTok{y =}\NormalTok{ points)}
+
+\NormalTok{area <-}\StringTok{ }\KeywordTok{rep}\NormalTok{(}\DecValTok{0}\NormalTok{, }\KeywordTok{max}\NormalTok{(hex_polys}\OperatorTok{$}\NormalTok{id_polygons))}
+\NormalTok{hex_area <-}\StringTok{ }\KeywordTok{cbind}\NormalTok{(hex_polys, area)}
+
+\NormalTok{avg_area <-}\StringTok{ }\NormalTok{intersection }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{group_by}\NormalTok{(id_polygons, }\DataTypeTok{.drop =} \OtherTok{FALSE}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{summarise}\NormalTok{(}\DataTypeTok{mean =} \KeywordTok{sum}\NormalTok{(log_area, }\DataTypeTok{na.rm=}\OtherTok{TRUE}\NormalTok{))}
+
+\NormalTok{hex_area}\OperatorTok{$}\NormalTok{area[avg_area}\OperatorTok{$}\NormalTok{id_polygons] <-}\StringTok{ }\NormalTok{avg_area}\OperatorTok{$}\NormalTok{mean}
+
+\KeywordTok{return}\NormalTok{(hex_area)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{run-those-functions-on-our-green-space-data-to-produce-a-plot-of-green-space-area-intensity}{%
+\paragraph{Run those functions on our green space data to produce a plot
+of green space area
+intensity}\label{run-those-functions-on-our-green-space-data-to-produce-a-plot-of-green-space-area-intensity}}
+
+The plot below show the total area of greenspace per polygon. My
+hypothesis is that the presence of green space is a major predictor of
+iNaturalist data and want to compare this plot to the species richness
+plot to see it it looks like green spaces and iNaturalist records are
+generally located in the same places.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{green_pts <-}\StringTok{ }\KeywordTok{covariate_hex_greens}\NormalTok{(greens)}
+\NormalTok{green_hex <-}\StringTok{ }\KeywordTok{point_to_hex_mean}\NormalTok{(hex_polys, green_pts)}
+\NormalTok{hex <-}\StringTok{ }\NormalTok{green_hex}
+\NormalTok{plot_variable <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(hex, variable )\{}
+\KeywordTok{plot}\NormalTok{(hex}\OperatorTok{$}\NormalTok{geometry, }\DataTypeTok{lwd=}\FloatTok{0.001}\NormalTok{, }
+     \DataTypeTok{col=}\KeywordTok{hcl.colors}\NormalTok{(}\KeywordTok{max}\NormalTok{(}\KeywordTok{as.integer}\NormalTok{(green_hex}\OperatorTok{$}\NormalTok{area)}\OperatorTok{+}\DecValTok{2}\NormalTok{, }\DataTypeTok{na.rm =} \OtherTok{TRUE}\NormalTok{), }\DataTypeTok{palette =} \StringTok{"viridis"}\NormalTok{, }\DataTypeTok{alpha =} \OtherTok{NULL}\NormalTok{, }\DataTypeTok{rev =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{fixup =} \OtherTok{TRUE}\NormalTok{)[}\KeywordTok{as.integer}\NormalTok{(green_hex}\OperatorTok{$}\NormalTok{area, }\DataTypeTok{na.rm=}\OtherTok{TRUE}\NormalTok{)}\OperatorTok{+}\DecValTok{1}\NormalTok{])}
+\NormalTok{\}}
+\KeywordTok{plot_variable}\NormalTok{(green_hex, green_hex}\OperatorTok{$}\NormalTok{area)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Earth_Lab_application_files/figure-latex/unnamed-chunk-15-1.pdf}
+
+\hypertarget{combine-species-richness-and-covariates-into-the-same-dataframe-for-analysis.}{%
+\subsubsection{Combine Species richness and covariates into the same
+dataframe for
+analysis.}\label{combine-species-richness-and-covariates-into-the-same-dataframe-for-analysis.}}
+
+In the previous code, I have created two spatial objects that are both
+hex grids with aggregated data assigned to each bin. To combine those
+sets, I first drop the geometry from one of the two because the
+geometries are identical and they will show up as duplicates in the
+combined dataset. After droping the geometry from one, I do a left join
+so they match polygonID values and then everything shares the single
+remaining geometry column.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{hex_list <-}\StringTok{ }\KeywordTok{st_drop_geometry}\NormalTok{(hex_counts) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{inner_join}\NormalTok{(}\KeywordTok{as.data.frame}\NormalTok{(green_hex), }\DataTypeTok{by=}\StringTok{"id_polygons"}\NormalTok{) }
+\KeywordTok{colnames}\NormalTok{(hex_list) <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"id_polygon"}\NormalTok{, }\StringTok{"species_richness"}\NormalTok{, }\StringTok{"park_size_average"}\NormalTok{,}\StringTok{"geometry"}\NormalTok{)}
+\KeywordTok{head}\NormalTok{(hex_list)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   id_polygon species_richness park_size_average                       geometry
+## 1          1                0                 0 POLYGON ((-105.6864 39.9224...
+## 2          2                0                 0 POLYGON ((-105.6764 39.9224...
+## 3          3                0                 0 POLYGON ((-105.6664 39.9224...
+## 4          4                0                 0 POLYGON ((-105.6564 39.9224...
+## 5          5                0                 0 POLYGON ((-105.6464 39.9224...
+## 6          6                0                 0 POLYGON ((-105.6364 39.9224...
+\end{verbatim}
+
+\hypertarget{inla-bayesian-inference}{%
+\subsubsection{INLA Bayesian inference}\label{inla-bayesian-inference}}
+
+The standard method for modern day model fitting is to use Markov chains
+to search for parameter values that allow equations to describe
+mechanisms for creating data. MCMC is a slow an laborious process
+because it searches continuous numerical space to find the lowest point
+of that surface, which represents the highest probability value.
+Integrated Nested Laplace Approximation (INLA) is a deterministic
+Bayesian method that approximates the same probability surface using
+triangular tessellation to simplify the surface and then search for
+minima on that approximated surface. Tessellating this surface has the
+potential to smooth over the global maxima to lower the precision of the
+extimate, but it can find that slightly less precise estimate orders of
+magnitude faster. Even if you want to use MCMC for the final model fit,
+INLA can quickly give you very good approximations of the continuous
+minimum values.\\
+Here I set up a linear model using familiar GLMM syntax. Species
+richness is the response variable being predicted by the covariates. The
+covariates included in this model are park size (e.g.~mean area for all
+parks in each hexagon), a random effect (e.g.~polygon ID), and the
+adjacency matrix defined by the hexagonal grid. I use a poisson link
+function because my iNaturalist data are counts and the poisson
+distribution is the distribution for count data.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Park sizes spanned such a great range of values that the a few massive open spaces dominated the analysis. I softened that effect by log transforming park area averages.   }
+\NormalTok{hex_list}\OperatorTok{$}\NormalTok{log_park_area <-}\StringTok{ }\KeywordTok{log}\NormalTok{(hex_list}\OperatorTok{$}\NormalTok{park_size_average)}
+\NormalTok{hex_list[}\KeywordTok{which}\NormalTok{(}\KeywordTok{is.infinite}\NormalTok{(hex_list}\OperatorTok{$}\NormalTok{log_park_area) }\OperatorTok{==}\StringTok{ }\OtherTok{TRUE}\NormalTok{),}\StringTok{"log_park_area"}\NormalTok{] <-}\StringTok{ }\DecValTok{0}
+
+\CommentTok{#This version of the inla model represents the adjacency matrix using a 2d random walk around the mesh grid.}
+\CommentTok{#Run the model}
+\NormalTok{m0.rw2d <-}\StringTok{ }\KeywordTok{inla}\NormalTok{(species_richness }\OperatorTok{~}\StringTok{ }\NormalTok{log_park_area }\OperatorTok{+}
+\StringTok{    }\KeywordTok{f}\NormalTok{(id_polygon, }\DataTypeTok{model =} \StringTok{"rw2d"}\NormalTok{, }\DataTypeTok{nrow =}\DecValTok{64}\NormalTok{, }\DataTypeTok{ncol =} \DecValTok{41}\NormalTok{),}
+  \DataTypeTok{family =} \StringTok{"poisson"}\NormalTok{, }\DataTypeTok{data =} \KeywordTok{as.data.frame}\NormalTok{(hex_list),}
+  \DataTypeTok{control.predictor =} \KeywordTok{list}\NormalTok{(}\DataTypeTok{compute =} \OtherTok{TRUE}\NormalTok{),}
+  \DataTypeTok{control.compute =} \KeywordTok{list}\NormalTok{(}\DataTypeTok{dic =} \OtherTok{TRUE}\NormalTok{) )}
+
+\CommentTok{# Print a summary of the model results. This is a single model, so no model comparisons happen yet. }
+\KeywordTok{summary}\NormalTok{(m0.rw2d)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+##    c("inla(formula = species_richness ~ log_park_area + f(id_polygon, ", " 
+##    model = \"rw2d\", nrow = 64, ncol = 41), family = \"poisson\", ", " 
+##    data = as.data.frame(hex_list), control.compute = list(dic = TRUE), ", 
+##    " control.predictor = list(compute = TRUE))") 
+## Time used:
+##     Pre = 3.22, Running = 15.5, Post = 0.326, Total = 19.1 
+## Fixed effects:
+##                 mean    sd 0.025quant 0.5quant 0.975quant   mode kld
+## (Intercept)   -5.312 0.350     -6.054   -5.292     -4.681 -5.252   0
+## log_park_area  0.200 0.057      0.088    0.200      0.312  0.200   0
+## 
+## Random effects:
+##   Name     Model
+##     id_polygon Random walk 2D
+## 
+## Model hyperparameters:
+##                           mean    sd 0.025quant 0.5quant 0.975quant  mode
+## Precision for id_polygon 0.036 0.003      0.031    0.036      0.042 0.036
+## 
+## Expected number of effective parameters(stdev): 777.75(11.88)
+## Number of equivalent replicates : 3.24 
+## 
+## Deviance Information Criterion (DIC) ...............: 5675.80
+## Deviance Information Criterion (DIC, saturated) ....: 4052.87
+## Effective number of parameters .....................: 1745.68
+## 
+## Marginal log-Likelihood:  -5378.82 
+## Posterior marginals for the linear predictor and
+##  the fitted values are computed
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Pass summary results back to the dataset so we can map them. }
+\NormalTok{hex_list}\OperatorTok{$}\NormalTok{RW2D <-}\StringTok{ }\NormalTok{m0.rw2d}\OperatorTok{$}\NormalTok{summary.fitted.values[, }\StringTok{"0.5quant"}\NormalTok{]}
+\NormalTok{hex_list}\OperatorTok{$}\NormalTok{RW2Dsd <-}\StringTok{ }\NormalTok{m0.rw2d}\OperatorTok{$}\NormalTok{summary.fitted.values[, }\StringTok{"sd"}\NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{plot-the-mean-predicted-values-from-the-model.}{%
+\subsubsection{Plot the mean predicted values from the
+model.}\label{plot-the-mean-predicted-values-from-the-model.}}
+
+A plot of our results show that green space area is remarkably
+predictive of iNaturalist species richness. The three major clusters in
+iNaturalist data match the three major clusters in green space area.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{model_predict <-}\StringTok{ }\KeywordTok{floor}\NormalTok{(hex_list}\OperatorTok{$}\NormalTok{RW2D)}
+\NormalTok{model_predict[}\KeywordTok{which}\NormalTok{(}\KeywordTok{is.na}\NormalTok{(model_predict) }\OperatorTok{==}\StringTok{ }\OtherTok{TRUE}\NormalTok{)] <-}\StringTok{ }\DecValTok{0} 
+
+\KeywordTok{plot}\NormalTok{(hex_list}\OperatorTok{$}\NormalTok{geometry, }\DataTypeTok{lwd=}\FloatTok{0.001}\NormalTok{, }
+     \DataTypeTok{col=}\KeywordTok{hcl.colors}\NormalTok{(}\KeywordTok{max}\NormalTok{(}\KeywordTok{floor}\NormalTok{(hex_list}\OperatorTok{$}\NormalTok{RW2D))}\OperatorTok{+}\DecValTok{2}\NormalTok{, }\DataTypeTok{palette =} \StringTok{"viridis"}\NormalTok{, }\DataTypeTok{alpha =} \OtherTok{NULL}\NormalTok{, }\DataTypeTok{rev =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{fixup =} \OtherTok{FALSE}\NormalTok{)[}\KeywordTok{floor}\NormalTok{(hex_list}\OperatorTok{$}\NormalTok{RW2D)}\OperatorTok{+}\DecValTok{1}\NormalTok{])}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Earth_Lab_application_files/figure-latex/unnamed-chunk-18-1.pdf}
+
+\hypertarget{is-the-fit-good}{%
+\subsubsection{Is the fit good?}\label{is-the-fit-good}}
+
+There are not P-values in INLA. Where an MCMC fit would use AIC values
+to compare different model fits, INLA uses a DIC or Deviance information
+criterion. In the figure below, we want our confidence intervals to NOT
+overlap zero. My predictor variable overlaps zero at the very lower tail
+of its distribution, but largely avoids it. This is a good indication
+that the species richness of iNaturalist records can be fairly
+accurately predicted by the area of green space and the adjacency of
+that green space to other green space.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{Efxplot}\NormalTok{(}\KeywordTok{list}\NormalTok{(m0.rw2d))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Earth_Lab_application_files/figure-latex/unnamed-chunk-19-1.pdf}
+
+\hypertarget{next-steps}{%
+\subsubsection{Next Steps}\label{next-steps}}
+
+To publish this analysis, I would need to build a few competing models
+representing different hypotheses and compare those models against each
+other using DIC model comparison. Each model will need to be internally
+tested to see if it should include random effects or not. The suite of
+competing models should be compared against each other using DIC to
+assign the best hypothesis given the data and the models presented.
+
+\end{document}
